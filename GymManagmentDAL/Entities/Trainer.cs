@@ -9,9 +9,21 @@ namespace GymManagmentDAL.Entities
 {
     internal class Trainer : GymUser
     {
-        public Specialties Specialties { get; set; }
-
         // Represents [HireDate Property == CreatedAt Of BaseEntity] Of Member Class in Fluent API
+        #region Property
+        public Specialties Specialties { get; set; }
+        #endregion
+
+        #region Relationships
+
+        #region Trainer - Session
+        public ICollection<Session> TrainerSessions { get; set; } = null!; 
+        #endregion
+
+        
+        #endregion
+
+
 
     }
 }

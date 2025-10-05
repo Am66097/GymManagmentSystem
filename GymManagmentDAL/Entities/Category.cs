@@ -8,6 +8,19 @@ namespace GymManagmentDAL.Entities
 {
     internal class Category
     {
+        #region Property
         public String CategoryName { get; set; } = null!;
+        #endregion
+
+
+        #region Relationships
+
+        #region Category - Session
+        public ICollection<Session> Sessions { get; set; } = null!;
+
+        #endregion
+        #endregion
+
+
     }
 }

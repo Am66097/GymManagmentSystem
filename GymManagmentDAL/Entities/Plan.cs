@@ -8,6 +8,8 @@ namespace GymManagmentDAL.Entities
 {
     internal class Plan : BaseEntity
     {
+        // Represents [StartDate Property == CreatedAt Of BaseEntity] Of Member Class in Fluent API
+        #region Properties
 
         public string Name { get; set; } = null!;
         public string Description { get; set; } = null!;
@@ -15,6 +17,14 @@ namespace GymManagmentDAL.Entities
         public int DurationInDays { get; set; }
         public bool IsActive { get; set; }
 
-        // Represents [StartDate Property == CreatedAt Of BaseEntity] Of Member Class in Fluent API
+        #endregion
+
+        #region Relationships
+
+        #region Plan - MemberShip
+        public ICollection<MemberShip> PlanMembers { get; set; } = null!;
+        #endregion
+
+        #endregion
     }
 }

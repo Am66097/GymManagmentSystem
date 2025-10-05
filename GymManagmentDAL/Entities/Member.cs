@@ -10,6 +10,33 @@ namespace GymManagmentDAL.Entities
     {
         // Represents [JoinDate Property == CreatedAt Of BaseEntity] Of Member Class in Fluent API
 
+        #region Properties
         public string Photo { get; set; } = null!;
+
+        #endregion
+
+        #region Relationships
+
+        #region Member - HealthRecord
+        public HealthRecord HealthRecord { get; set; } = null!;
+        #endregion
+
+
+        #region Member - MemberShips
+
+        public ICollection<MemberShip> MemberShips { get; set; } = null!;
+
+        #endregion
+
+        #region Member - MemberSession
+
+        public ICollection<MemberSession> MemberSessions { get; set; }
+
+        #endregion
+
+
+        #endregion
+
+
     }
 }
