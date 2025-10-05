@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace GymManagmentDAL.Entities
 {
-    internal class Category : BaseEntity
+    internal class Category
     {
-
-        public String Description { get; set; } = null!;
-        public int Capacity { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public String CategoryName { get; set; } = null!;
     }
 }
