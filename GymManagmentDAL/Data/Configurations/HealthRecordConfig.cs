@@ -20,7 +20,12 @@ namespace GymManagmentDAL.Data.Configurations
             // One-to-one with HealthRecord
             builder.HasOne<Member>()
                   .WithOne(x => x.HealthRecord)
-                  .HasForeignKey<HealthRecord>(X => X.Id);
+                  .HasForeignKey<HealthRecord>(X => X.Id)
+                  .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Ignore(x => x.CreatedAt);
+            builder.Ignore(x => x.UpdatedAt); // by default it will be determined by Ef core
+
 
 
 

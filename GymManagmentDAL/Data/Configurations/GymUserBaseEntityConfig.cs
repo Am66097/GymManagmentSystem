@@ -23,13 +23,13 @@ namespace GymManagmentDAL.Data.Configurations
                .HasMaxLength(100);
 
             builder.Property(x=>x.PhoneNumber)
-                .HasColumnType("varcahr")
+                .HasColumnType("varchar")
                 .HasMaxLength(11);
 
             builder.ToTable(Tb =>
             {
                 Tb.HasCheckConstraint("GymUserVaildEmailCheck", "Email like '_%@_%._%'");
-                Tb.HasCheckConstraint("GymUserVaildPhoneCheck", "Phone Like '01%' and Phone Not like '%[^0-9]%'");
+                Tb.HasCheckConstraint("GymUserVaildPhoneCheck", "PhoneNumber Like '01%' and PhoneNumber Not like '%[^0-9]%'");
             });
 
             builder.HasIndex(x => x.Email).IsUnique();

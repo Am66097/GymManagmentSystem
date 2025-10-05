@@ -17,7 +17,7 @@ namespace GymManagmentDAL.Data.Configurations
            builder.ToTable(tb =>
            {
                tb.HasCheckConstraint("SessionVaildDayCheck", "Capacity between 1 and 25");
-               tb.HasCheckConstraint("SessionVaildEndTimeCheck", "EndTime > StartTime");
+               tb.HasCheckConstraint("SessionVaildEndTimeCheck", "EndDate > StartDate");
            });
 
             builder.HasOne(x => x.SessionCategory)
