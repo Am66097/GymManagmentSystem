@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GymManagmentDAL.Entities
 {
-    internal class Session : BaseEntity
+    public class Session : BaseEntity
     {
         #region Property
         public String Description { get; set; } = null!;

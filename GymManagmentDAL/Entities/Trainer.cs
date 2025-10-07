@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GymManagmentDAL.Entities
 {
-    internal class Trainer : GymUser
+    public class Trainer : GymUser
     {
         // Represents [HireDate Property == CreatedAt Of BaseEntity] Of Member Class in Fluent API
         #region Property

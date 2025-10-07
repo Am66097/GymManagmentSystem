@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace GymManagmentDAL.Repositories.Classes
 {
-    internal class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity, new()
+    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity, new()
     {
         private readonly GymDbContext _dbcontext;
         private readonly DbSet<T> _dbSet;

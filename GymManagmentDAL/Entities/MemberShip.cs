@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GymManagmentDAL.Entities
 {
-    internal class MemberShip : BaseEntity
+    public class MemberShip : BaseEntity
     {
         // StartDate == CreatedAt
 

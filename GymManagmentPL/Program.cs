@@ -1,3 +1,6 @@
+using GymManagmentDAL.Repositories.Classes;
+using GymManagmentDAL.Repositories.Interfaces;
+
 namespace GymManagmentPL
 {
     public class Program
@@ -8,6 +11,7 @@ namespace GymManagmentPL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
 
             var app = builder.Build();
 

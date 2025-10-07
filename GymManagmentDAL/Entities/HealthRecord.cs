@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GymManagmentDAL.Entities
 {
-    internal class HealthRecord : BaseEntity
+    public class HealthRecord : BaseEntity
     {
         // Represents [LastUpdate Property == UpdatedAt Of BaseEntity] Of Member Class in Fluent API
 

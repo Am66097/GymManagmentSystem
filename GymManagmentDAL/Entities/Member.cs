@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GymManagmentDAL.Entities
 {
-    internal class Member : GymUser
+    public class Member : GymUser
     {
         // Represents [JoinDate Property == CreatedAt Of BaseEntity] Of Member Class in Fluent API
 
