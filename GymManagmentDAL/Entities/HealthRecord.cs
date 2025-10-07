@@ -11,8 +11,8 @@ namespace GymManagmentDAL.Entities
         // Represents [LastUpdate Property == UpdatedAt Of BaseEntity] Of Member Class in Fluent API
 
         #region Properties
-        public int Height { get; set; }
-        public int Weight { get; set; }
+        public decimal Height { get; set; }
+        public decimal Weight { get; set; }
         public string BloodType { get; set; } = null!;
         public string? Notes { get; set; }
         #endregion

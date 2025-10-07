@@ -10,7 +10,7 @@ namespace GymManagmentDAL.Repositories.Interfaces
     public interface IGenericRepository<T> where T : BaseEntity, new()
     {
 
-        IEnumerable<T> GetAll();
+        IEnumerable<T> GetAll(Func<T,bool>? Condition = null);
         T? GetById(int id);
         int Add(T entity);
         int Update(T entity);

@@ -19,6 +19,48 @@ namespace GymMangmentBLL.Services.Classes
         {
             _repository = memberRepo;
         }
+
+        public bool CreateMember(CreateMemberViewModel Createdmember)
+        {
+            try
+            {  //Check If Email Is Exists
+                var emailExists = _repository.GetAll(x => x.Email == Createdmember.Email).Any();
+                //Check If Phone Is Exists
+                var phoneExists = _repository.GetAll(x => x.PhoneNumber == Createdmember.Phone).Any();
+
+                //If One Of Them Exists Return False
+                if (emailExists || phoneExists) return false;
+                //If Not Add Member And Return True If Added
+                var member = new Member()
+                {
+                    Name = Createdmember.Name,
+                    Email = Createdmember.Email,
+                    PhoneNumber = Createdmember.Phone,
+                    Gender = Createdmember.Gender,
+                    DateOfBirth = Createdmember.DateOfBirth,
+                    Address = new Address()
+                    {
+                        BuildingNumber = Createdmember.BuildingNumber,
+                        City = Createdmember.City,
+                        Street = Createdmember.Street
+                    },
+                    HealthRecord = new HealthRecord()
+                    {
+                        Height = Createdmember.HealthRecordViewModel.Height,
+                        Weight = Createdmember.HealthRecordViewModel.Weight,
+                        BloodType = Createdmember.HealthRecordViewModel.BloodType,
+                        Notes = Createdmember.HealthRecordViewModel.Note
+                    }
+                };
+
+                return _repository.Add(member) > 0;
+            }
+            catch (Exception ) 
+            {
+            return false;
+            }
+        }
+
         public IEnumerable<MemberViewModel> GetAllMembers()
         {
             var Members = _repository.GetAll();
@@ -34,5 +76,7 @@ namespace GymMangmentBLL.Services.Classes
             });                                                                                      
             return MemberViewModels;
         }
+
+
     }
 }
