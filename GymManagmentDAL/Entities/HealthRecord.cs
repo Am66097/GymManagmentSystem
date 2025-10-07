@@ -17,10 +17,7 @@ namespace GymManagmentDAL.Entities
         public string? Notes { get; set; }
         #endregion
 
-        #region Relationships
-        public int MemberId { get; set; }
-        public Member Member { get; set; } = null!;
-        #endregion
+        
 
 
 

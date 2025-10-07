@@ -13,15 +13,15 @@ namespace GymManagmentDAL.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<HealthRecord> builder)
         {
-           
-            builder.ToTable("Member")
+
+            builder.ToTable("Members")
                 .HasKey(hr => hr.Id);
 
             // One-to-one with HealthRecord
             builder.HasOne<Member>()
                   .WithOne(x => x.HealthRecord)
                   .HasForeignKey<HealthRecord>(X => X.Id)
-                  .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.NoAction);
 
             builder.Ignore(x => x.CreatedAt);
             builder.Ignore(x => x.UpdatedAt); // by default it will be determined by Ef core

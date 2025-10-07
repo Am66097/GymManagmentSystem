@@ -20,6 +20,8 @@ namespace GymManagmentDAL.Data.Configurations
 
             base.Configure(builder);
 
+
+
         }
 
     }

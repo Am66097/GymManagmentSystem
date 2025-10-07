@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace GymManagmentDAL.Data.Migrations
+namespace GymManagmentDAL.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -33,6 +33,10 @@ namespace GymManagmentDAL.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Photo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Height = table.Column<int>(type: "int", nullable: false),
+                    Weight = table.Column<int>(type: "int", nullable: false),
+                    BloodType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     JoinDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
@@ -94,33 +98,6 @@ namespace GymManagmentDAL.Data.Migrations
                     table.PrimaryKey("PK_Trainers", x => x.Id);
                     table.CheckConstraint("GymUserVaildEmailCheck1", "Email like '_%@_%._%'");
                     table.CheckConstraint("GymUserVaildPhoneCheck1", "PhoneNumber Like '01%' and PhoneNumber Not like '%[^0-9]%'");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Member",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    Height = table.Column<int>(type: "int", nullable: false),
-                    Weight = table.Column<int>(type: "int", nullable: false),
-                    BloodType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MemberId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Member", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Member_Members_Id",
-                        column: x => x.Id,
-                        principalTable: "Members",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Member_Members_MemberId",
-                        column: x => x.MemberId,
-                        principalTable: "Members",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -187,41 +164,12 @@ namespace GymManagmentDAL.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Bookings",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MemberId = table.Column<int>(type: "int", nullable: false),
-                    SessionId = table.Column<int>(type: "int", nullable: false),
-                    BookingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsAttended = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Bookings", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Bookings_Members_MemberId",
-                        column: x => x.MemberId,
-                        principalTable: "Members",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Bookings_Sessions_SessionId",
-                        column: x => x.SessionId,
-                        principalTable: "Sessions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "MemberSessions",
                 columns: table => new
                 {
                     MemberId = table.Column<int>(type: "int", nullable: false),
                     SessionId = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsAttended = table.Column<bool>(type: "bit", nullable: false),
                     BookingDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "'GETDATE()'"),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -242,21 +190,6 @@ namespace GymManagmentDAL.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Bookings_MemberId",
-                table: "Bookings",
-                column: "MemberId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Bookings_SessionId",
-                table: "Bookings",
-                column: "SessionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Member_MemberId",
-                table: "Member",
-                column: "MemberId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Members_Email",
@@ -311,12 +244,6 @@ namespace GymManagmentDAL.Data.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Bookings");
-
-            migrationBuilder.DropTable(
-                name: "Member");
-
             migrationBuilder.DropTable(
                 name: "MemberSessions");
 

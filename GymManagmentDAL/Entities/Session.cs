@@ -32,7 +32,6 @@ namespace GymManagmentDAL.Entities
         public ICollection<MemberSession> SessionMembers { get; set; } = null!;
         #endregion 
 
-        public ICollection<Bookings> Bookings { get; set; } = new List<Bookings>();
 
         #endregion
 
