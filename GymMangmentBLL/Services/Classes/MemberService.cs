@@ -18,16 +18,19 @@ namespace GymMangmentBLL.Services.Classes
         private readonly IGenericRepository<MemberShip> _memberShipRepo;
         private readonly IPlanRepository _planRepository;
         private readonly IGenericRepository<HealthRecord> _healthRecordRepo;
+        private readonly IGenericRepository<MemberSession> _memberSessionRepo;
 
         public MemberService(IGenericRepository<Member> memberRepo,
                              IGenericRepository<MemberShip> memberShipRepo,
                              IPlanRepository planRepository,
-                             IGenericRepository<HealthRecord> healthRecordRepo)
+                             IGenericRepository<HealthRecord> healthRecordRepo,
+                             IGenericRepository<MemberSession> memberSessionRepo)
         {
             _memberRepository = memberRepo;
             _memberShipRepo = memberShipRepo;
             _planRepository = planRepository;
             _healthRecordRepo = healthRecordRepo;
+            _memberSessionRepo = memberSessionRepo;
         }
 
         public bool CreateMember(CreateMemberViewModel Createdmember)
@@ -205,8 +208,43 @@ namespace GymMangmentBLL.Services.Classes
             return _memberRepository.GetAll(x => x.PhoneNumber == phone).Any();
         }
 
-            #endregion
 
+        #endregion
+
+        public bool RemoveMember(int MemberId)
+        {
+            var member = _memberRepository.GetById(MemberId);
+            if(member == null) return false;
+             
+            var HasActiveMembership = _memberSessionRepo
+                .GetAll(x=>x.MemberId==MemberId&&x.Session.StartDate>DateTime.Now).Any();
+
+            if (HasActiveMembership) return false;
+            var MemberShips = _memberShipRepo.GetAll(x => x.MemberId == MemberId);
+
+            try
+            { 
+            
+                if(MemberShips.Any())
+                {
+                    foreach (var memberShip in MemberShips)
+                    {
+                        _memberShipRepo.Delete(memberShip);
+                    }
+
+                }
+                return _memberRepository.Delete(member) > 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
 
         }
+
+
+
+
+
+    }
 }
