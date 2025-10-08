@@ -22,17 +22,10 @@ namespace GymManagmentDAL.Repositories.Classes
             _dbSet = context.Set<T>();
         }
 
-        public int Add(T entity)
-        {
-           this._dbcontext.Set<T>().Add(entity);
-            return this._dbcontext.SaveChanges();
-        }
+        public void Add(T entity) => this._dbcontext.Set<T>().Add(entity);
+           
 
-        public int Delete(T entity)
-        {
-            this._dbcontext.Set<T>().Remove(entity);
-            return this._dbcontext.SaveChanges();
-        }
+        public void Delete(T entity) => this._dbcontext.Set<T>().Remove(entity);
 
         public IEnumerable<T> GetAll(Func<T, bool>? Condition = null)
         {
@@ -44,10 +37,7 @@ namespace GymManagmentDAL.Repositories.Classes
 
         public T? GetById(int id) =>this._dbcontext.Set<T>().Find(id);
 
-        public int Update(T entity)
-        {
-            this._dbcontext.Set<T>().Update(entity);
-            return this._dbcontext.SaveChanges();
-        }
+        public void Update(T entity) => this._dbcontext.Set<T>().Update(entity);
+
     }
 }

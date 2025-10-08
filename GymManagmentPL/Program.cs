@@ -1,3 +1,4 @@
+//using Abp.Domain.Uow;
 using GymManagmentDAL.Repositories.Classes;
 using GymManagmentDAL.Repositories.Interfaces;
 
@@ -11,8 +12,13 @@ namespace GymManagmentPL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
-            builder.Services.AddScoped<IPlanRepository, PlanRepository>();
+
+            builder.Services.AddDbContext<GymManagmentDAL.Data.Context.GymDbContext>();
+            //builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
+            //builder.Services.AddScoped<IPlanRepository, PlanRepository>(); 
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
 
             var app = builder.Build();
