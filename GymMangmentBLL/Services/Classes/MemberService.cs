@@ -14,7 +14,7 @@ namespace GymMangmentBLL.Services.Classes
 {
     internal class MemberService : IMemberService
     {
-        private readonly IGenericRepository<Member> _repository;
+        private readonly IGenericRepository<Member> _memberRepository;
         private readonly IGenericRepository<MemberShip> _memberShipRepo;
         private readonly IPlanRepository _planRepository;
         private readonly IGenericRepository<HealthRecord> _healthRecordRepo;
@@ -24,7 +24,7 @@ namespace GymMangmentBLL.Services.Classes
                              IPlanRepository planRepository,
                              IGenericRepository<HealthRecord> healthRecordRepo)
         {
-            _repository = memberRepo;
+            _memberRepository = memberRepo;
             _memberShipRepo = memberShipRepo;
             _planRepository = planRepository;
             _healthRecordRepo = healthRecordRepo;
@@ -33,13 +33,19 @@ namespace GymMangmentBLL.Services.Classes
         public bool CreateMember(CreateMemberViewModel Createdmember)
         {
             try
-            {  //Check If Email Is Exists
-                var emailExists = _repository.GetAll(x => x.Email == Createdmember.Email).Any();
-                //Check If Phone Is Exists
-                var phoneExists = _repository.GetAll(x => x.PhoneNumber == Createdmember.Phone).Any();
+            {
+                ////Check If Email Is Exists
+                //var emailExists = _memberRepository.GetAll(x => x.Email == Createdmember.Email).Any();
+                ////Check If Phone Is Exists
+                //var phoneExists = _memberRepository.GetAll(x => x.PhoneNumber == Createdmember.Phone).Any();
 
-                //If One Of Them Exists Return False
-                if (emailExists || phoneExists) return false;
+                ////If One Of Them Exists Return False
+                //if (emailExists || phoneExists) return false; // ==
+
+                if (IsEmailExists(Createdmember.Email) || IsPhoneExists(Createdmember.Phone)) return false;
+
+
+
                 //If Not Add Member And Return True If Added
                 var member = new Member()
                 {
@@ -63,34 +69,34 @@ namespace GymMangmentBLL.Services.Classes
                     }
                 };
 
-                return _repository.Add(member) > 0;
+                return _memberRepository.Add(member) > 0;
             }
-            catch (Exception ) 
+            catch (Exception)
             {
-            return false;
+                return false;
             }
         }
 
         public IEnumerable<MemberViewModel> GetAllMembers()
         {
-            var Members = _repository.GetAll();
-            if(Members == null || !Members .Any()) { return Enumerable.Empty<MemberViewModel>(); }//== []
+            var Members = _memberRepository.GetAll();
+            if (Members == null || !Members.Any()) { return Enumerable.Empty<MemberViewModel>(); }//== []
             var MemberViewModels = Members.Select(x => new MemberViewModel
             {
                 Id = x.Id,
                 Name = x.Name,
                 Email = x.Email,
-                Phone=x.PhoneNumber,
-                Photo=x.Photo,
-                Gender=x.Gender.ToString()
-            });                                                                                      
+                Phone = x.PhoneNumber,
+                Photo = x.Photo,
+                Gender = x.Gender.ToString()
+            });
             return MemberViewModels;
         }
 
         public MemberViewModel? GetMemberDetailsById(int MemberId)
         {
 
-            var member = _repository.GetById(MemberId);
+            var member = _memberRepository.GetById(MemberId);
             if (member == null) return null;
             var memberViewModel = new MemberViewModel
             {
@@ -105,13 +111,13 @@ namespace GymMangmentBLL.Services.Classes
 
             //Active Membership
 
-            var activeMembership = _memberShipRepo.GetAll(m => m.Id == MemberId && m.Status=="Active")
+            var activeMembership = _memberShipRepo.GetAll(m => m.Id == MemberId && m.Status == "Active")
                 .FirstOrDefault();
 
-            if(activeMembership != null)
+            if (activeMembership != null)
             {
-                memberViewModel.MembershipStartDate= activeMembership.CreatedAt.ToShortDateString();
-                memberViewModel.MembershipEndDate= activeMembership.EndDate.ToShortDateString();
+                memberViewModel.MembershipStartDate = activeMembership.CreatedAt.ToShortDateString();
+                memberViewModel.MembershipEndDate = activeMembership.EndDate.ToShortDateString();
 
                 var plan = _planRepository.GetById(activeMembership.PlanId);
                 memberViewModel.PlanName = plan?.Name;
@@ -136,5 +142,71 @@ namespace GymMangmentBLL.Services.Classes
             return healthRecordViewModel;
         }
 
-    }
+        public MemberToUpdateViewModel GetMemberToUpdateById(int MemberId)
+        {
+            var member = _memberRepository.GetById(MemberId);
+            if (member == null) return null;
+            return new MemberToUpdateViewModel()
+            {
+                Name = member.Name,
+                Email = member.Email,
+                Phone = member.PhoneNumber,
+                Photo = member.Photo,
+                BuildingNumber = member.Address.BuildingNumber,
+                Street = member.Address.Street,
+                City = member.Address.City,
+                DateOfBirth = member.DateOfBirth
+
+            };
+        }
+
+        public bool UpdateMemberDetails(int MemberId, MemberToUpdateViewModel UpdatedMember)
+        {
+            try
+            {
+                ////Check If Email Is Exists
+                //var emailExists = _memberRepository.GetAll(x => x.Email == UpdatedMember.Email && x.Id != MemberId).Any();
+                ////Check If Phone Is Exists
+                //var phoneExists = _memberRepository.GetAll(x => x.PhoneNumber == UpdatedMember.Phone && x.Id != MemberId).Any();
+                ////If One Of Them Exists Return False
+                //if (emailExists || phoneExists) return false; // ==
+
+                if (IsEmailExists(UpdatedMember.Email) || IsPhoneExists(UpdatedMember.Phone)) return false;
+
+
+                var oldMember = _memberRepository.GetById(MemberId);
+                if (oldMember == null) return false;
+                oldMember.Name = UpdatedMember.Name;
+                oldMember.Email = UpdatedMember.Email;
+                oldMember.PhoneNumber = UpdatedMember.Phone;
+                oldMember.Photo = UpdatedMember.Photo;
+                oldMember.DateOfBirth = UpdatedMember.DateOfBirth;
+                oldMember.Address.BuildingNumber = UpdatedMember.BuildingNumber;
+                oldMember.Address.Street = UpdatedMember.Street;
+                oldMember.Address.City = UpdatedMember.City;
+                oldMember.UpdatedAt = DateTime.Now;
+                return _memberRepository.Update(oldMember) > 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            }
+
+        #region Helper Methods
+
+        private bool IsEmailExists(string email)
+        {
+            return _memberRepository.GetAll(x=>x.Email == email).Any();
+        }
+        private bool IsPhoneExists(string phone)
+        {
+            return _memberRepository.GetAll(x => x.PhoneNumber == phone).Any();
+        }
+
+            #endregion
+
+
+        }
 }
