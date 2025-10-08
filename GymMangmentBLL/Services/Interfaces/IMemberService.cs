@@ -14,5 +14,9 @@ namespace GymMangmentBLL.Services.Interfaces
         bool CreateMember(CreateMemberViewModel Createdmember);
 
         MemberViewModel? GetMemberDetailsById(int MemberId);
+
+        HealthRecordViewModel GetHealthRecordDetailsById(int MemberId);
+
+
     }
 }

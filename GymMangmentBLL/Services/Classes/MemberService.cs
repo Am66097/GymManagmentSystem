@@ -15,16 +15,19 @@ namespace GymMangmentBLL.Services.Classes
     internal class MemberService : IMemberService
     {
         private readonly IGenericRepository<Member> _repository;
-        private readonly IGenericRepository<MemberShip> memberShipRepo;
-        private readonly IPlanRepository planRepository;
+        private readonly IGenericRepository<MemberShip> _memberShipRepo;
+        private readonly IPlanRepository _planRepository;
+        private readonly IGenericRepository<HealthRecord> _healthRecordRepo;
 
         public MemberService(IGenericRepository<Member> memberRepo,
                              IGenericRepository<MemberShip> memberShipRepo,
-                             IPlanRepository planRepository)
+                             IPlanRepository planRepository,
+                             IGenericRepository<HealthRecord> healthRecordRepo)
         {
             _repository = memberRepo;
-            this.memberShipRepo = memberShipRepo;
-            this.planRepository = planRepository;
+            _memberShipRepo = memberShipRepo;
+            _planRepository = planRepository;
+            _healthRecordRepo = healthRecordRepo;
         }
 
         public bool CreateMember(CreateMemberViewModel Createdmember)
@@ -102,7 +105,7 @@ namespace GymMangmentBLL.Services.Classes
 
             //Active Membership
 
-            var activeMembership = this.memberShipRepo.GetAll(m => m.Id == MemberId && m.Status=="Active")
+            var activeMembership = _memberShipRepo.GetAll(m => m.Id == MemberId && m.Status=="Active")
                 .FirstOrDefault();
 
             if(activeMembership != null)
@@ -110,7 +113,7 @@ namespace GymMangmentBLL.Services.Classes
                 memberViewModel.MembershipStartDate= activeMembership.CreatedAt.ToShortDateString();
                 memberViewModel.MembershipEndDate= activeMembership.EndDate.ToShortDateString();
 
-                var plan = planRepository.GetById(activeMembership.PlanId);
+                var plan = _planRepository.GetById(activeMembership.PlanId);
                 memberViewModel.PlanName = plan?.Name;
 
 
@@ -118,5 +121,20 @@ namespace GymMangmentBLL.Services.Classes
             return memberViewModel;
 
         }
+
+        public HealthRecordViewModel GetHealthRecordDetailsById(int MemberId)
+        {
+            var healthRecord = _healthRecordRepo.GetById(MemberId);
+            if (healthRecord == null) return null;
+            var healthRecordViewModel = new HealthRecordViewModel
+            {
+                Height = healthRecord.Height,
+                Weight = healthRecord.Weight,
+                BloodType = healthRecord.BloodType,
+                Note = healthRecord.Notes
+            };
+            return healthRecordViewModel;
+        }
+
     }
 }
