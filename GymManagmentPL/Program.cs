@@ -12,6 +12,8 @@ namespace GymManagmentPL
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
+            builder.Services.AddScoped<IPlanRepository, PlanRepository>();
+
 
             var app = builder.Build();
 

@@ -34,8 +34,10 @@ namespace GymManagmentDAL.Entities
         public ICollection<MemberSession> MemberSessions { get; set; }
 
         #endregion
+
         #endregion
 
+        //public int PlanId { get; set; } // مش عارف مكانها هنا صح ولا لاء ,دي انا ضايفها مؤاخرا لحل خطأ تاني قدام , يعني مش ضايفها وقت انشاء الكلاسات
 
     }
 }
