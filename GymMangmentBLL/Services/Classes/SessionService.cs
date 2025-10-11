@@ -112,7 +112,55 @@ namespace GymMangmentBLL.Services.Classes
 
         }
 
+        public UpdateSessionViewModel GetSessionForUpdate(int sessionId)
+        {
+             var session = _unitOfWork.GetRepository<Session>().GetById(sessionId);
+            if (session == null) return null;
+            if (!IsSessionAvalibleToUpdate(session)) return null;
+            var mappedSession = _mapper.Map<UpdateSessionViewModel>(session);
+            return mappedSession;
+
+        }
+
+        public bool UpdateSession(int sessionId, UpdateSessionViewModel UpdatedSession)
+        {
+            try
+            {
+                var session = _unitOfWork.sessionRepository.GetById(sessionId);
+                if(!IsSessionAvalibleToUpdate(session)) return false;
+                if(!IsTrainerExists(UpdatedSession.TrainerId)) return false;
+                if(!IsStartDateBeforeEndDate(UpdatedSession.StartDate, UpdatedSession.EndDate)) return false;
+
+                _mapper.Map(UpdatedSession, session);
+                session!.UpdatedAt = DateTime.Now;
+                _unitOfWork.GetRepository<Session>().Update(session);
+                return _unitOfWork.SaveChanges() > 0;
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Update Faild Session : {ex}");
+                return false;
+            }
+        }
         #region Helper Methods
+
+        private bool IsSessionAvalibleToUpdate(Session session)
+        { 
+        
+            //A session is available to update if it has no booked members
+            var bookedMembersCount = _unitOfWork.sessionRepository.GetCountOfBookedSlots(session.Id);
+            return bookedMembersCount == 0;
+
+            //If Session Completed you can't update it
+            if(session.EndDate < DateTime.Now) return false;
+
+            //If Session Started you can't update it
+            if(session.StartDate <= DateTime.Now) return false;
+
+            return true;
+
+        }
 
         private bool IsTrainerExists(int trainerId)
         {
@@ -129,6 +177,7 @@ namespace GymMangmentBLL.Services.Classes
         {
             return StartDate < EndDate;
         }
+
 
         #endregion
 
