@@ -134,7 +134,7 @@ namespace GymMangmentBLL.Services.Classes
                 .FirstOrDefault();
 
             if (activeMembership != null)
-            {
+            {   
                 memberViewModel.MembershipStartDate = activeMembership.CreatedAt.ToShortDateString();
                 memberViewModel.MembershipEndDate = activeMembership.EndDate.ToShortDateString();
 
@@ -215,19 +215,6 @@ namespace GymMangmentBLL.Services.Classes
 
         }
 
-        #region Helper Methods
-        
-        private bool IsEmailExists(string email)
-        {
-            return _unitOfWork.GetRepository<Member>().GetAll(x => x.Email == email).Any();
-        }
-        private bool IsPhoneExists(string phone)
-        {
-            return _unitOfWork.GetRepository<Member>().GetAll(x => x.PhoneNumber == phone).Any();
-        }
-
-
-        #endregion
 
         public bool RemoveMember(int MemberId)
         {
@@ -264,6 +251,19 @@ namespace GymMangmentBLL.Services.Classes
 
         }
 
+        #region Helper Methods
+        
+        private bool IsEmailExists(string email)
+        {
+            return _unitOfWork.GetRepository<Member>().GetAll(x => x.Email == email).Any();
+        }
+        private bool IsPhoneExists(string phone)
+        {
+            return _unitOfWork.GetRepository<Member>().GetAll(x => x.PhoneNumber == phone).Any();
+        }
+
+
+        #endregion
 
 
 
