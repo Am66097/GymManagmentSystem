@@ -3,6 +3,7 @@ using GymManagmentDAL.Data.Context;
 using GymManagmentDAL.Data.DataSeed;
 using GymManagmentDAL.Repositories.Classes;
 using GymManagmentDAL.Repositories.Interfaces;
+using GymMangmentBLL;
 using Microsoft.EntityFrameworkCore;
 
 namespace GymManagmentPL
@@ -30,9 +31,10 @@ namespace GymManagmentPL
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<ISessionRepository, SessionRepository>();
+            builder.Services.AddAutoMapper(x=>x.AddProfile(new MappingProfiles()));
 
+            var app = builder.Build(); 
 
-            var app = builder.Build();
             #region Data Seeding _ Pennding Migarations
             
             using var scope = app.Services.CreateScope();
