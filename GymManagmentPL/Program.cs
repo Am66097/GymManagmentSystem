@@ -1,6 +1,9 @@
 //using Abp.Domain.Uow;
+using GymManagmentDAL.Data.Context;
+using GymManagmentDAL.Data.DataSeed;
 using GymManagmentDAL.Repositories.Classes;
 using GymManagmentDAL.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace GymManagmentPL
 {
@@ -13,7 +16,15 @@ namespace GymManagmentPL
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddDbContext<GymManagmentDAL.Data.Context.GymDbContext>();
+            builder.Services.AddDbContext<GymDbContext>( options =>
+            {
+
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            
+            } );
+
+
+
             //builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
             //builder.Services.AddScoped<IPlanRepository, PlanRepository>(); 
 
@@ -22,6 +33,20 @@ namespace GymManagmentPL
 
 
             var app = builder.Build();
+            #region Data Seeding _ Pennding Migarations
+            
+            using var scope = app.Services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<GymDbContext>();
+            var pendingMigarations = dbContext.Database.GetPendingMigrations();
+            if(pendingMigarations?.Any() ?? false)
+            {
+                dbContext.Database.Migrate();
+            }
+
+            GymDbContextSeeding.seedData(dbContext);
+            #endregion
+
+
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

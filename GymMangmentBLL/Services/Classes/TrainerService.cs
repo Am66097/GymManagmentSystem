@@ -30,7 +30,13 @@ namespace GymMangmentBLL.Services.Classes
                 Name = t.Name,
                 Phone = t.PhoneNumber,
                 Email = t.Email,
-                Specialty = t.Specialties.ToString()
+                Specialty = t.Specialties.ToString(),
+                Address = new Address
+                {
+                    BuildingNumber = t.Address.BuildingNumber,
+                    Street = t.Address.Street,
+                    City = t.Address.City
+                }
             });
 
         }
@@ -127,8 +133,9 @@ namespace GymMangmentBLL.Services.Classes
         {
             try
             {
+               
                 var trainer = _unitOfWork.GetRepository<Trainer>().GetById(TrainerId);
-                if (trainer is null) return false;
+                if (trainer is null || HasActiveSessions(TrainerId)) return false;
                 _unitOfWork.GetRepository<Trainer>().Delete(trainer);
                 return _unitOfWork.SaveChanges() > 0;
             }
@@ -153,7 +160,11 @@ namespace GymMangmentBLL.Services.Classes
             return _unitOfWork.GetRepository<Trainer>().GetAll(t => t.PhoneNumber == phone).Any();
         }
 
-
+        private bool HasActiveSessions(int trainerId)
+        {
+            var currentDate = DateTime.Now;
+            return _unitOfWork.GetRepository<Session>().GetAll(s => s.TrainerId == trainerId && s.StartDate > currentDate).Any();
+        }
 
 
         #endregion
