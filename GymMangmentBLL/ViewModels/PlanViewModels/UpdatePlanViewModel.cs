@@ -18,7 +18,7 @@ namespace GymMangmentBLL.ViewModels.PlanViewModels
         public string Description { get; set; } = null!;
 
         [Required(ErrorMessage ="Duration Days Is Required")]
-        [Range(1, 365, ErrorMessage = "Duration Days Must Be Between 1 And 365 Days")]
+        [Range(1, 366, ErrorMessage = "Duration Days Must Be Between 1 And 365 Days")]
         public int DurationDays { get; set; }
 
         [Required(ErrorMessage ="Price Is Required")]

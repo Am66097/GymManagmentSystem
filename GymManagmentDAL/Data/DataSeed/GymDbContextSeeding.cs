@@ -41,6 +41,7 @@ namespace GymManagmentDAL.Data.DataSeed
             catch (Exception ex)
             {
                 Console.WriteLine($"Seeding Faild : {ex}");
+                return false;
             }
                 return dbContext.SaveChanges() > 0;
 
