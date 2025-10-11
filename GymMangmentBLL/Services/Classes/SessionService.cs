@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using GymManagementSystemBLL.ViewModels.SessionViewModels;
 using GymManagmentDAL.Entities;
 using GymManagmentDAL.Repositories.Interfaces;
 using GymMangmentBLL.Services.Interfaces;
@@ -21,6 +22,36 @@ namespace GymMangmentBLL.Services.Classes
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+
+        public bool CreateSession(CreateSessionViewModel CreatedSession)
+        {
+            try
+            {
+                //Check if Trainer Exists
+                if (!IsTrainerExists(CreatedSession.TrainerId)) return false;
+
+                //Check if Category Exists
+                if (!IsCategoryExists(CreatedSession.CategoryId)) return false;
+
+                //Check if Start Date is before End Date
+                if (!IsStartDateBeforeEndDate(CreatedSession.StartDate, CreatedSession.EndDate)) return false;
+
+                var session = _mapper.Map<CreateSessionViewModel, Session>(CreatedSession);
+                _unitOfWork.GetRepository<Session>().Add(session);
+                return _unitOfWork.SaveChanges() > 0;
+
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine($"Create Faild Session : {ex}");
+                return false;
+            }
+
+
+
+        }
+
         public IEnumerable<SessionViewModel> GetAllSessions()
         {
             var Sessions = _unitOfWork.sessionRepository.GetAllSessionsWithTrainersAndCategory();
@@ -80,5 +111,26 @@ namespace GymMangmentBLL.Services.Classes
 
 
         }
+
+        #region Helper Methods
+
+        private bool IsTrainerExists(int trainerId)
+        {
+            var trainer = _unitOfWork.GetRepository<Trainer>().GetById(trainerId);
+            return trainer != null;
+        }
+
+        private bool IsCategoryExists(int categoryId)
+        {
+            var category = _unitOfWork.GetRepository<Category>().GetById(categoryId);
+            return category != null;
+        }
+        private bool IsStartDateBeforeEndDate(DateTime StartDate, DateTime EndDate)
+        {
+            return StartDate < EndDate;
+        }
+
+        #endregion
+
     }
 }
