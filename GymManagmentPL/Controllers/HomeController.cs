@@ -1,32 +1,45 @@
-using System.Diagnostics;
-using GymManagmentPL.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace GymManagmentPL.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
-
-        public IActionResult Index()
+        public IActionResult Index() //IActionResult for all types of views
         {
             return View();
         }
 
-        public IActionResult Privacy()
+        public ViewResult About() //ViewResult for only views
         {
+            ViewData["Message"] = "Your application description page.";
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public FileResult GetImage() //FileResult for files
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "css", "site.css");
+            var fileBytes = System.IO.File.ReadAllBytes(filePath);
+            return File(fileBytes, "site/css");
         }
+
+        public JsonResult GetJson() //JsonResult for JSON data
+        {
+            var data = new { Name = "Gym Management System", Version = "1.0.0" };
+            return Json(data);
+        }
+
+        public RedirectResult GoToGoogle() //RedirectResult for redirection
+        {
+            return Redirect("https://www.google.com");
+        }
+        public ContentResult GetContent() //ContentResult for plain text
+        {
+            return Content("<h1>Hello, this is a plain text response.</h1>","HTML");
+        }
+
+
+
+
+
     }
 }

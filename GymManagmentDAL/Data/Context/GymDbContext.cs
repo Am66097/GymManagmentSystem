@@ -11,6 +11,10 @@ namespace GymManagmentDAL.Data.Context
 {
     public class GymDbContext : DbContext
     {
+        public GymDbContext(DbContextOptions<GymDbContext> options)
+           : base(options)
+        {
+        }
         #region Method
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
