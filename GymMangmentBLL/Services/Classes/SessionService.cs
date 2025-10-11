@@ -143,8 +143,43 @@ namespace GymMangmentBLL.Services.Classes
                 return false;
             }
         }
+        public bool DeleteSession(int sessionId)
+        {
+         
+            try
+            {
+                var session = _unitOfWork.GetRepository<Session>().GetById(sessionId);
+                if (session == null) return false;
+                if (!IsSessionAvalibleToRemove(session)) return false;
+                _unitOfWork.GetRepository<Session>().Delete(session);
+                return _unitOfWork.SaveChanges() > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Delete Faild Session : {ex}");
+                return false;
+            }
+
+        }
         #region Helper Methods
 
+        private bool IsSessionAvalibleToRemove(Session session)
+        {
+
+            //A session is available to delete if it has no booked members
+            var bookedMembersCount = _unitOfWork.sessionRepository.GetCountOfBookedSlots(session.Id);
+            return bookedMembersCount == 0;
+
+            //if session is uncoming you can delete it
+            if(session.StartDate > DateTime.Now) return true;
+
+
+            //If Session Started you can't delete it
+            if (session.StartDate <= DateTime.Now && session.EndDate>DateTime.Now) return false;
+
+            return true;
+
+        }
         private bool IsSessionAvalibleToUpdate(Session session)
         { 
         
@@ -177,6 +212,7 @@ namespace GymMangmentBLL.Services.Classes
         {
             return StartDate < EndDate;
         }
+
 
 
         #endregion
