@@ -1,4 +1,5 @@
-﻿using GymManagmentDAL.Entities;
+﻿using AutoMapper;
+using GymManagmentDAL.Entities;
 using GymManagmentDAL.Repositories.Classes;
 using GymManagmentDAL.Repositories.Interfaces;
 using GymMangmentBLL.Services.Interfaces;
@@ -36,13 +37,16 @@ namespace GymMangmentBLL.Services.Classes
         #endregion
 
 
-        #region After Useing Unit Of Work Pattern
 
-        private readonly IUnitOfWork _unitOfWork;        
+        #region After Useing Unit Of Work Pattern -- With Auto Mapper 
 
-        public MemberService(IUnitOfWork unitOfWork) 
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+
+        public MemberService(IUnitOfWork unitOfWork, IMapper mapper) 
         {
             _unitOfWork = unitOfWork;
+            this._mapper = mapper;
         }
 
 
@@ -63,32 +67,42 @@ namespace GymMangmentBLL.Services.Classes
                 if (IsEmailExists(Createdmember.Email) || IsPhoneExists(Createdmember.Phone)) return false;
 
 
+                #region Before Using AutoMapper Pattern
 
                 //If Not Add Member And Return True If Added
-                var member = new Member()
-                {
-                    Name = Createdmember.Name,
-                    Email = Createdmember.Email,
-                    PhoneNumber = Createdmember.Phone,
-                    Gender = Createdmember.Gender,
-                    DateOfBirth = Createdmember.DateOfBirth,
-                    Address = new Address()
-                    {
-                        BuildingNumber = Createdmember.BuildingNumber,
-                        City = Createdmember.City,
-                        Street = Createdmember.Street
-                    },
-                    HealthRecord = new HealthRecord()
-                    {
-                        Height = Createdmember.HealthRecordViewModel.Height,
-                        Weight = Createdmember.HealthRecordViewModel.Weight,
-                        BloodType = Createdmember.HealthRecordViewModel.BloodType,
-                        Notes = Createdmember.HealthRecordViewModel.Note
-                    }
-                };
+                //var member = new Member()
+                //{
+                //    Name = Createdmember.Name,
+                //    Email = Createdmember.Email,
+                //    PhoneNumber = Createdmember.Phone,
+                //    Gender = Createdmember.Gender,
+                //    DateOfBirth = Createdmember.DateOfBirth,
+                //    Address = new Address()
+                //    {
+                //        BuildingNumber = Createdmember.BuildingNumber,
+                //        City = Createdmember.City,
+                //        Street = Createdmember.Street
+                //    },
+                //    HealthRecord = new HealthRecord()
+                //    {
+                //        Height = Createdmember.HealthRecordViewModel.Height,
+                //        Weight = Createdmember.HealthRecordViewModel.Weight,
+                //        BloodType = Createdmember.HealthRecordViewModel.BloodType,
+                //        Notes = Createdmember.HealthRecordViewModel.Note
+                //    }
+                //};
 
+                //_unitOfWork.GetRepository<Member>().Add(member);
+                //return _unitOfWork.SaveChanges() > 0; 
+
+                #endregion
+
+                #region After Using AutoMapper Pattern
+
+                var member = _mapper.Map<Member>(Createdmember);
                 _unitOfWork.GetRepository<Member>().Add(member);
-                return _unitOfWork.SaveChanges() > 0;
+                return _unitOfWork.SaveChanges() > 0; 
+                #endregion
             }
             catch (Exception)
             {
@@ -100,16 +114,26 @@ namespace GymMangmentBLL.Services.Classes
         {
             var Members = _unitOfWork.GetRepository<Member>().GetAll();
             if (Members == null || !Members.Any()) { return Enumerable.Empty<MemberViewModel>(); }//== []
-            var MemberViewModels = Members.Select(x => new MemberViewModel
-            {
-                Id = x.Id,
-                Name = x.Name,
-                Email = x.Email,
-                Phone = x.PhoneNumber,
-                Photo = x.Photo,
-                Gender = x.Gender.ToString()
-            });
-            return MemberViewModels;
+            #region Before Using AutoMapper Pattern
+            //var MemberViewModels = Members.Select(x => new MemberViewModel
+            //{
+            //    Id = x.Id,
+            //    Name = x.Name,
+            //    Email = x.Email,
+            //    Phone = x.PhoneNumber,
+            //    Photo = x.Photo,
+            //    Gender = x.Gender.ToString()
+            //});
+            //return MemberViewModels; 
+            #endregion
+
+            #region After Using AutoMapper Pattern
+
+            var members = _unitOfWork.GetRepository<Member>().GetAll();
+            return _mapper.Map<IEnumerable<MemberViewModel>>(members);
+
+            #endregion
+
         }
 
         public MemberViewModel? GetMemberDetailsById(int MemberId)
@@ -117,16 +141,22 @@ namespace GymMangmentBLL.Services.Classes
 
             var member = _unitOfWork.GetRepository<Member>().GetById(MemberId);
             if (member == null) return null;
-            var memberViewModel = new MemberViewModel
-            {
-                Name = member.Name,
-                Email = member.Email,
-                Phone = member.PhoneNumber,
-                Gender = member.Gender.ToString(),
-                DateOfBirth = member.DateOfBirth.ToString("yyyy-MM-dd"),
-                Address = $"{member.Address.BuildingNumber}, {member.Address.Street}, {member.Address.City}",
-                Photo = member.Photo,
-            };
+
+            #region Before Using AutoMapper Pattern
+            //var memberViewModel = new MemberViewModel
+            //{
+            //    Name = member.Name,
+            //    Email = member.Email,
+            //    Phone = member.PhoneNumber,
+            //    Gender = member.Gender.ToString(),
+            //    DateOfBirth = member.DateOfBirth.ToString("yyyy-MM-dd"),
+            //    Address = $"{member.Address.BuildingNumber}, {member.Address.Street}, {member.Address.City}",
+            //    Photo = member.Photo,
+            //}; 
+            #endregion
+
+
+            var memberViewModel = _mapper.Map<MemberViewModel>(member); // After Using AutoMapper Pattern
 
             //Active Membership
 
@@ -145,38 +175,55 @@ namespace GymMangmentBLL.Services.Classes
             }
             return memberViewModel;
 
-        }
+        }  
 
+        
         public HealthRecordViewModel GetHealthRecordDetailsById(int MemberId)
         {
             var healthRecord = _unitOfWork.GetRepository<HealthRecord>().GetById(MemberId);
             if (healthRecord == null) return null;
-            var healthRecordViewModel = new HealthRecordViewModel
-            {
-                Height = healthRecord.Height,
-                Weight = healthRecord.Weight,
-                BloodType = healthRecord.BloodType,
-                Note = healthRecord.Notes
-            };
-            return healthRecordViewModel;
+            #region Before Using AutoMapper Pattern
+            //var healthRecordViewModel = new HealthRecordViewModel
+            //{
+            //    Height = healthRecord.Height,
+            //    Weight = healthRecord.Weight,
+            //    BloodType = healthRecord.BloodType,
+            //    Note = healthRecord.Notes
+            //};
+            //return healthRecordViewModel; 
+            #endregion
+
+            #region After Using AutoMapper Pattern
+            var healthRecordViewModel = _mapper.Map<HealthRecordViewModel>(healthRecord);
+            return healthRecordViewModel; 
+            #endregion
         }
 
         public MemberToUpdateViewModel GetMemberToUpdateById(int MemberId)
         {
+            #region Before Using AutoMapper Pattern
+            //var member = _unitOfWork.GetRepository<Member>().GetById(MemberId);
+            //return new MemberToUpdateViewModel()
+            //{
+            //    Name = member.Name,
+            //    Email = member.Email,
+            //    Phone = member.PhoneNumber,
+            //    Photo = member.Photo,
+            //    BuildingNumber = member.Address.BuildingNumber,
+            //    Street = member.Address.Street,
+            //    City = member.Address.City,
+            //    DateOfBirth = member.DateOfBirth
+
+            //}; 
+            #endregion
+
+            #region After Using AutoMapper Pattern
             var member = _unitOfWork.GetRepository<Member>().GetById(MemberId);
             if (member == null) return null;
-            return new MemberToUpdateViewModel()
-            {
-                Name = member.Name,
-                Email = member.Email,
-                Phone = member.PhoneNumber,
-                Photo = member.Photo,
-                BuildingNumber = member.Address.BuildingNumber,
-                Street = member.Address.Street,
-                City = member.Address.City,
-                DateOfBirth = member.DateOfBirth
+            return _mapper.Map<MemberToUpdateViewModel>(member); 
+            #endregion
 
-            };
+
         }
 
         public bool UpdateMemberDetails(int MemberId, MemberToUpdateViewModel UpdatedMember)
@@ -194,19 +241,28 @@ namespace GymMangmentBLL.Services.Classes
 
                 var Repo = _unitOfWork.GetRepository<Member>();
 
-                var oldMember = Repo.GetById(MemberId);
-                if (oldMember == null) return false;
-                oldMember.Name = UpdatedMember.Name;
-                oldMember.Email = UpdatedMember.Email;
-                oldMember.PhoneNumber = UpdatedMember.Phone;
-                oldMember.Photo = UpdatedMember.Photo;
-                oldMember.DateOfBirth = UpdatedMember.DateOfBirth;
-                oldMember.Address.BuildingNumber = UpdatedMember.BuildingNumber;
-                oldMember.Address.Street = UpdatedMember.Street;
-                oldMember.Address.City = UpdatedMember.City;
+                #region Before Using AutoMapper Pattern
+                //var oldMember = Repo.GetById(MemberId);
+                //if (oldMember == null) return false;
+                //oldMember.Name = UpdatedMember.Name;
+                //oldMember.Email = UpdatedMember.Email;
+                //oldMember.PhoneNumber = UpdatedMember.Phone;
+                //oldMember.Photo = UpdatedMember.Photo;
+                //oldMember.DateOfBirth = UpdatedMember.DateOfBirth;
+                //oldMember.Address.BuildingNumber = UpdatedMember.BuildingNumber;
+                //oldMember.Address.Street = UpdatedMember.Street;
+                //oldMember.Address.City = UpdatedMember.City;
+                //oldMember.UpdatedAt = DateTime.Now;
+                //return _unitOfWork.SaveChanges() > 0 ; 
+                #endregion
+
+                #region After Using AutoMapper Pattern
+                var oldMember = _unitOfWork.GetRepository<Member>().GetById(MemberId);
+                _mapper.Map(UpdatedMember, oldMember);
                 oldMember.UpdatedAt = DateTime.Now;
-                return _unitOfWork.SaveChanges() > 0 ;
-                
+                return _unitOfWork.SaveChanges() > 0; 
+                #endregion
+
             }
             catch (Exception)
             {
@@ -264,6 +320,7 @@ namespace GymMangmentBLL.Services.Classes
 
 
         #endregion
+
 
 
 

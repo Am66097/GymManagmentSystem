@@ -161,6 +161,7 @@ namespace GymMangmentBLL.Services.Classes
             }
 
         }
+        
         #region Helper Methods
 
         private bool IsSessionAvalibleToRemove(Session session)

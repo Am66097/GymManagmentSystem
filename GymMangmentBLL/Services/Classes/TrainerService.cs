@@ -1,4 +1,5 @@
-﻿using GymManagmentDAL.Entities;
+﻿using AutoMapper;
+using GymManagmentDAL.Entities;
 using GymManagmentDAL.Repositories.Interfaces;
 using GymMangmentBLL.Services.Interfaces;
 using GymMangmentBLL.ViewModels.TrainerViewModels;
@@ -14,30 +15,37 @@ namespace GymMangmentBLL.Services.Classes
     public class TrainerService : ITrainerService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public TrainerService(IUnitOfWork unitOfWork)
+        public TrainerService(IUnitOfWork unitOfWork,IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            this._mapper = mapper;
         }
 
         IEnumerable<TrainerViewModel> ITrainerService.GetAllTrainers()
         {
             var Trainers = _unitOfWork.GetRepository<Trainer>().GetAll();
             if (Trainers == null || !Trainers.Any()) return Enumerable.Empty<TrainerViewModel>(); // Return an empty collection if there are no trainers = []
-            return Trainers.Select(t => new TrainerViewModel()
-            {
-                Id = t.Id,
-                Name = t.Name,
-                Phone = t.PhoneNumber,
-                Email = t.Email,
-                Specialty = t.Specialties.ToString(),
-                Address = new Address
-                {
-                    BuildingNumber = t.Address.BuildingNumber,
-                    Street = t.Address.Street,
-                    City = t.Address.City
-                }
-            });
+            #region Before Using AutoMapper Pattern
+            //return Trainers.Select(t => new TrainerViewModel()
+            //{
+            //    Id = t.Id,
+            //    Name = t.Name,
+            //    Phone = t.PhoneNumber,
+            //    Email = t.Email,
+            //    Specialty = t.Specialties.ToString(),
+            //    Address = new Address
+            //    {
+            //        BuildingNumber = t.Address.BuildingNumber,
+            //        Street = t.Address.Street,
+            //        City = t.Address.City
+            //    }
+            //}); 
+            #endregion
+
+            return _mapper.Map<IEnumerable<TrainerViewModel>>(Trainers); // Using AutoMapper Pattern
+
 
         }
 
@@ -48,18 +56,26 @@ namespace GymMangmentBLL.Services.Classes
 
             try
             {
-                var trainer = new Trainer()
-                {
-                    Name = CreatedTrainer.Name,
-                    Email = CreatedTrainer.Email,
-                    PhoneNumber = CreatedTrainer.Phone,
-                    Specialties = CreatedTrainer.Specialty,
-                    DateOfBirth = CreatedTrainer.DateOfBirth
-                };
+                #region Before Using AutoMapper Pattern
+                //var trainer = new Trainer()
+                //{
+                //    Name = CreatedTrainer.Name,
+                //    Email = CreatedTrainer.Email,
+                //    PhoneNumber = CreatedTrainer.Phone,
+                //    Specialties = CreatedTrainer.Specialty,
+                //    DateOfBirth = CreatedTrainer.DateOfBirth
+                //};
 
 
+                //_unitOfWork.GetRepository<Trainer>().Add(trainer);
+                //return _unitOfWork.SaveChanges() > 0; 
+                #endregion
+
+                #region After Using AutoMapper Pattern
+                var trainer = _mapper.Map<Trainer>(CreatedTrainer);
                 _unitOfWork.GetRepository<Trainer>().Add(trainer);
-                return _unitOfWork.SaveChanges() > 0;
+                return _unitOfWork.SaveChanges() > 0; 
+                #endregion
             }
             catch (Exception)
             {
@@ -73,15 +89,19 @@ namespace GymMangmentBLL.Services.Classes
 
             var trainer = _unitOfWork.GetRepository<Trainer>().GetById(TrainerId);
             if (trainer is null) return null;
-            var TrainerViewaModel = new TrainerViewModel()
-            {
-                Id = trainer.Id,
-                Name = trainer.Name,
-                Phone = trainer.PhoneNumber,
-                Email = trainer.Email,
-                Specialty = trainer.Specialties.ToString()
-            };
-            return TrainerViewaModel;
+            #region Before Using AutoMapper Pattern
+            //var TrainerViewaModel = new TrainerViewModel()
+            //{
+            //    Id = trainer.Id,
+            //    Name = trainer.Name,
+            //    Phone = trainer.PhoneNumber,
+            //    Email = trainer.Email,
+            //    Specialty = trainer.Specialties.ToString()
+            //};
+            //return TrainerViewaModel; 
+            #endregion
+
+            return _mapper.Map<TrainerViewModel>(trainer); // Using AutoMapper Pattern
 
         }
 
@@ -90,36 +110,59 @@ namespace GymMangmentBLL.Services.Classes
         {
             var trainer = _unitOfWork.GetRepository<Trainer>().GetById(TrainerId);
             if (trainer is null) return null;
-            return new TrainerToUpdateViewModel()
-            {
-                Name = trainer.Name,
-                Phone = trainer.PhoneNumber,
-                Email = trainer.Email,
-                Specialty = trainer.Specialties,
-                DateOfBirth = trainer.DateOfBirth,
-                BuildingNumber = trainer.Address.BuildingNumber,
-                Street = trainer.Address.Street,
-                City = trainer.Address.City
-            };
+            #region Before Using AutoMapper Pattern
+            //return new TrainerToUpdateViewModel()
+            //{
+            //    Name = trainer.Name,
+            //    Phone = trainer.PhoneNumber,
+            //    Email = trainer.Email,
+            //    Specialty = trainer.Specialties,
+            //    DateOfBirth = trainer.DateOfBirth,
+            //    BuildingNumber = trainer.Address.BuildingNumber,
+            //    Street = trainer.Address.Street,
+            //    City = trainer.Address.City
+            //}; 
+            #endregion
 
+            return _mapper.Map<TrainerToUpdateViewModel>(trainer);// Using AutoMapper Pattern
         }
 
         bool ITrainerService.UpdateTrainerDetailsById(int TrainerId, TrainerToUpdateViewModel UpdatedTrainer)
         {
             try
             {
-                if (IsEmailExist(UpdatedTrainer.Email)|| IsPhoneExist(UpdatedTrainer.Phone))return false;
-                var oldMember = _unitOfWork.GetRepository<Trainer>().GetById(TrainerId);
-                if (oldMember is null) return false;
-                oldMember.Name = UpdatedTrainer.Name;
-                oldMember.Email = UpdatedTrainer.Email;
-                oldMember.PhoneNumber = UpdatedTrainer.Phone;
-                oldMember.DateOfBirth = UpdatedTrainer.DateOfBirth;
-                oldMember.Address.BuildingNumber = UpdatedTrainer.BuildingNumber;
-                oldMember.Address.Street = UpdatedTrainer.Street;
-                oldMember.Address.City = UpdatedTrainer.City;
-                oldMember.UpdatedAt = DateTime.Now;
-                return _unitOfWork.SaveChanges() > 0;
+                #region Before Using AutoMapper Pattern
+                //if (IsEmailExist(UpdatedTrainer.Email)|| IsPhoneExist(UpdatedTrainer.Phone))return false;
+                //var oldMember = _unitOfWork.GetRepository<Trainer>().GetById(TrainerId);
+                //if (oldMember is null) return false;
+                //oldMember.Name = UpdatedTrainer.Name;
+                //oldMember.Email = UpdatedTrainer.Email;
+                //oldMember.PhoneNumber = UpdatedTrainer.Phone;
+                //oldMember.DateOfBirth = UpdatedTrainer.DateOfBirth;
+                //oldMember.Address.BuildingNumber = UpdatedTrainer.BuildingNumber;
+                //oldMember.Address.Street = UpdatedTrainer.Street;
+                //oldMember.Address.City = UpdatedTrainer.City;
+                //oldMember.UpdatedAt = DateTime.Now;
+                //return _unitOfWork.SaveChanges() > 0; 
+                #endregion
+
+                #region After Using AutoMapper Pattern
+                if (IsEmailExist(UpdatedTrainer.Email) || IsPhoneExist(UpdatedTrainer.Phone))
+                    return false;
+
+                var oldTrainer = _unitOfWork.GetRepository<Trainer>().GetById(TrainerId);
+                if (oldTrainer == null) return false;
+
+                _mapper.Map(UpdatedTrainer, oldTrainer); // Using Auto Mapper
+                oldTrainer.UpdatedAt = DateTime.Now;                      // Using Manual Mapper
+
+                // تحديث العنوان يدويًا
+                oldTrainer.Address.BuildingNumber = UpdatedTrainer.BuildingNumber;
+                oldTrainer.Address.Street = UpdatedTrainer.Street;
+                oldTrainer.Address.City = UpdatedTrainer.City;
+
+                return _unitOfWork.SaveChanges() > 0; 
+                #endregion
 
 
             }
