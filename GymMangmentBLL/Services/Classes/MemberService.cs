@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace GymMangmentBLL.Services.Classes
 {
-    internal class MemberService : IMemberService
+    public class MemberService : IMemberService
     {
         #region Before Useing Unit Of Work Pattern
         //private readonly IGenericRepository<Member> _memberRepository;

@@ -34,18 +34,6 @@ namespace GymMangmentBLL
             #endregion
 
             #region AutoMappering For Member 
-            // GetMemberDetailsById
-            CreateMap<Member, MemberViewModel>()
-    .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.PhoneNumber))
-    .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender.ToString()))
-    .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth.ToString("yyyy-MM-dd")))
-    .ForMember(dest => dest.Address, opt => opt.MapFrom(src =>
-        $"{src.Address.BuildingNumber}, {src.Address.Street}, {src.Address.City}"))
-    .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Photo))
-    // القيم دي هنعبيها يدويًا بعد المابّينج
-    .ForMember(dest => dest.MembershipStartDate, opt => opt.Ignore())
-    .ForMember(dest => dest.MembershipEndDate, opt => opt.Ignore())
-    .ForMember(dest => dest.PlanName, opt => opt.Ignore());
 
             //  من CreateMemberViewModel → Member
             CreateMap<CreateMemberViewModel, Member>()
@@ -64,6 +52,20 @@ namespace GymMangmentBLL
                     Notes = src.HealthRecordViewModel.Note
                 }));
 
+            // GetMemberDetailsById
+            CreateMap<Member, MemberViewModel>()
+    .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.PhoneNumber))
+    .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender.ToString()))
+    .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth.ToString("yyyy-MM-dd")))
+    .ForMember(dest => dest.Address, opt => opt.MapFrom(src =>
+        $"{src.Address.BuildingNumber}, {src.Address.Street}, {src.Address.City}"))
+    .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Photo))
+    // القيم دي هنعبيها يدويًا بعد المابّينج
+    .ForMember(dest => dest.MembershipStartDate, opt => opt.Ignore())
+    .ForMember(dest => dest.MembershipEndDate, opt => opt.Ignore())
+    .ForMember(dest => dest.PlanName, opt => opt.Ignore());
+
+
             //  من Member → MemberViewModel
             CreateMap<Member, MemberViewModel>()
                 .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.PhoneNumber))
@@ -80,6 +82,8 @@ namespace GymMangmentBLL
 
             //  من MemberToUpdateViewModel → Member (للتحديث)
             CreateMap<MemberToUpdateViewModel, Member>()
+                .ForMember(dest => dest.Name, opt => opt.Ignore()) // مش هتتغير
+                .ForMember(dest => dest.Photo, opt => opt.Ignore()) // مش هتتغير
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Phone))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => new Address
                 {
@@ -87,6 +91,7 @@ namespace GymMangmentBLL
                     Street = src.Street,
                     City = src.City
                 }));
+
 
             //  من HealthRecord → HealthRecordViewModel
             CreateMap<HealthRecord, HealthRecordViewModel>()

@@ -17,10 +17,10 @@ namespace GymManagmentDAL.Data.Context
         }
         #region Method
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("server=.;Database=GymManagmentSystem;Trusted_Connection=true ; TrustServerCertificate=True");
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer("server=.;Database=GymManagmentSystem;Trusted_Connection=true ; TrustServerCertificate=True");
+        //}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
