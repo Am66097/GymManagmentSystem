@@ -38,7 +38,7 @@ namespace GymMangmentBLL.ViewModels.MemberViewModels
         [Range(1,9000,ErrorMessage ="Building Number Must Be Between 1 And 9000")]
         public int BuildingNumber { get; set; }
 
-        [Required(ErrorMessage ="Buildin Is Required")]
+        [Required(ErrorMessage ="Street Is Required")]
         [StringLength(30,MinimumLength =2,ErrorMessage ="Street Must Be Between 2 And 30 Chars")]
         public string Street { get; set; } = null!;
 
@@ -49,7 +49,7 @@ namespace GymMangmentBLL.ViewModels.MemberViewModels
         public string City { get; set; } = null!;
 
         [Required(ErrorMessage = "Health Record Is Required")]
-        public HealthRecordViewModel HealthRecordViewModel { get; set; } = null;
-    
+        public HealthRecordViewModel HealthRecordViewModel { get; set; } = new HealthRecordViewModel();
+
     }
 }
