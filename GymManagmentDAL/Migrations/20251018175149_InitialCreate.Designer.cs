@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymManagmentDAL.Migrations
 {
     [DbContext(typeof(GymDbContext))]
-    [Migration("20251017220049_Init")]
-    partial class Init
+    [Migration("20251018175149_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,6 +52,7 @@ namespace GymManagmentDAL.Migrations
             modelBuilder.Entity("GymManagmentDAL.Entities.HealthRecord", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<string>("BloodType")
@@ -59,13 +60,13 @@ namespace GymManagmentDAL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Height")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Weight")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(6,2)");
 
                     b.HasKey("Id");
 
@@ -163,11 +164,11 @@ namespace GymManagmentDAL.Migrations
 
             modelBuilder.Entity("GymManagmentDAL.Entities.MemberShip", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("MemberId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<int>("PlanId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -178,18 +179,16 @@ namespace GymManagmentDAL.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("MemberId1")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("PlanId")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("MemberId1");
+                    b.HasKey("MemberId", "PlanId");
 
                     b.HasIndex("PlanId");
 
@@ -410,7 +409,7 @@ namespace GymManagmentDAL.Migrations
                 {
                     b.HasOne("GymManagmentDAL.Entities.Member", "Member")
                         .WithMany("MemberShips")
-                        .HasForeignKey("MemberId1")
+                        .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

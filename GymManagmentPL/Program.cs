@@ -1,4 +1,4 @@
-//using Abp.Domain.Uow;
+﻿//using Abp.Domain.Uow;
 using GymManagmentDAL.Data.Context;
 using GymManagmentDAL.Data.DataSeed;
 using GymManagmentDAL.Repositories.Classes;
@@ -72,6 +72,8 @@ namespace GymManagmentPL
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
+
+            
 
             app.Run();
         }

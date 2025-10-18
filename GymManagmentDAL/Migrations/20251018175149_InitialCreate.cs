@@ -33,8 +33,8 @@ namespace GymManagmentDAL.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Photo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Height = table.Column<int>(type: "int", nullable: false),
-                    Weight = table.Column<int>(type: "int", nullable: false),
+                    Height = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
+                    Weight = table.Column<decimal>(type: "decimal(6,2)", nullable: false),
                     BloodType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     JoinDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
@@ -104,20 +104,20 @@ namespace GymManagmentDAL.Migrations
                 name: "MemberShips",
                 columns: table => new
                 {
+                    MemberId = table.Column<int>(type: "int", nullable: false),
+                    PlanId = table.Column<int>(type: "int", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    MemberId1 = table.Column<int>(type: "int", nullable: false),
-                    PlanId = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MemberShips", x => x.Id);
+                    table.PrimaryKey("PK_MemberShips", x => new { x.MemberId, x.PlanId });
                     table.ForeignKey(
-                        name: "FK_MemberShips_Members_MemberId1",
-                        column: x => x.MemberId1,
+                        name: "FK_MemberShips_Members_MemberId",
+                        column: x => x.MemberId,
                         principalTable: "Members",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -207,11 +207,6 @@ namespace GymManagmentDAL.Migrations
                 name: "IX_MemberSessions_MemberId",
                 table: "MemberSessions",
                 column: "MemberId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MemberShips_MemberId1",
-                table: "MemberShips",
-                column: "MemberId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MemberShips_PlanId",

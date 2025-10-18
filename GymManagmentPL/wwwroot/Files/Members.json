@@ -1,0 +1,122 @@
+[
+  {
+    "Name": "Ali Hassan",
+    "Email": "ali.hassan@example.com",
+    "PhoneNumber": "01015551111",
+    "Address": "12 Nile St, Cairo",
+    "MembershipDate": "2023-01-15",
+    "Status": "Active"
+  },
+  {
+    "Name": "Sara Mahmoud",
+    "Email": "sara.mahmoud@example.com",
+    "PhoneNumber": "01025552222",
+    "Address": "45 Zamalek, Cairo",
+    "MembershipDate": "2023-03-10",
+    "Status": "Active"
+  },
+  {
+    "Name": "Omar Youssef",
+    "Email": "omar.youssef@example.com",
+    "PhoneNumber": "01035553333",
+    "Address": "89 Downtown, Alexandria",
+    "MembershipDate": "2023-06-05",
+    "Status": "Suspended"
+  },
+  {
+    "Name": "Mona Said",
+    "Email": "mona.said@example.com",
+    "PhoneNumber": "01045554444",
+    "Address": "22 Garden City, Cairo",
+    "MembershipDate": "2024-02-18",
+    "Status": "Active"
+  },
+  {
+    "Name": "Khaled Nabil",
+    "Email": "khaled.nabil@example.com",
+    "PhoneNumber": "01055555555",
+    "Address": "77 El-Maadi, Cairo",
+    "MembershipDate": "2024-09-01",
+    "Status": "Suspended"
+  },
+  {
+    "Name": "Heba Fathy",
+    "Email": "heba.fathy@example.com",
+    "PhoneNumber": "01065556666",
+    "Address": "34 Tanta St, Giza",
+    "MembershipDate": "2024-07-21",
+    "Status": "Active"
+  },
+  {
+    "Name": "Mohamed Adel",
+    "Email": "mohamed.adel@example.com",
+    "PhoneNumber": "01075557777",
+    "Address": "5 El-Montaza, Alexandria",
+    "MembershipDate": "2022-11-30",
+    "Status": "Suspended"
+  },
+  {
+    "Name": "Nour El-Sherif",
+    "Email": "nour.elsherif@example.com",
+    "PhoneNumber": "01085558888",
+    "Address": "9 Heliopolis, Cairo",
+    "MembershipDate": "2024-01-12",
+    "Status": "Active"
+  },
+  {
+    "Name": "Farida Gamal",
+    "Email": "farida.gamal@example.com",
+    "PhoneNumber": "01095559999",
+    "Address": "65 Mansoura Rd, Mansoura",
+    "MembershipDate": "2023-09-05",
+    "Status": "Suspended"
+  },
+  {
+    "Name": "Youssef Ibrahim",
+    "Email": "youssef.ibrahim@example.com",
+    "PhoneNumber": "01106661111",
+    "Address": "2 Sporting, Alexandria",
+    "MembershipDate": "2022-12-10",
+    "Status": "Active"
+  },
+  {
+    "Name": "Rana Magdy",
+    "Email": "rana.magdy@example.com",
+    "PhoneNumber": "01116662222",
+    "Address": "31 Shubra St, Cairo",
+    "MembershipDate": "2024-05-09",
+    "Status": "Active"
+  },
+  {
+    "Name": "Mostafa Kamal",
+    "Email": "mostafa.kamal@example.com",
+    "PhoneNumber": "01126663333",
+    "Address": "7 Fayoum Rd, Giza",
+    "MembershipDate": "2023-04-22",
+    "Status": "Suspended"
+  },
+  {
+    "Name": "Dina Lotfy",
+    "Email": "dina.lotfy@example.com",
+    "PhoneNumber": "01136664444",
+    "Address": "56 Port Said Rd, Ismailia",
+    "MembershipDate": "2023-08-14",
+    "Status": "Active"
+  },
+  {
+    "Name": "Hossam Reda",
+    "Email": "hossam.reda@example.com",
+    "PhoneNumber": "01146665555",
+    "Address": "12 Luxor St, Luxor",
+    "MembershipDate": "2022-10-01",
+    "Status": "Suspended"
+  },
+  {
+    "Name": "Layla Tarek",
+    "Email": "layla.tarek@example.com",
+    "PhoneNumber": "01156666666",
+    "Address": "19 Aswan Rd, Aswan",
+    "MembershipDate": "2024-06-30",
+    "Status": "Active"
+  }
+]

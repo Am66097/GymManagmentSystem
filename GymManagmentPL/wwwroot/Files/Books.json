@@ -1,0 +1,83 @@
+[
+  {
+    "Title": "Love Across the Nile",
+    "Price": 180.00,
+    "AvailableCopies": 6,
+    "TotalCopies": 6,
+    "PublicationYear": 2021,
+    "AuthorId": 2,
+    "CategoryId": 1
+  },
+  {
+    "Title": "Cairo Hearts",
+    "Price": 150.00,
+    "AvailableCopies": 5,
+    "TotalCopies": 5,
+    "PublicationYear": 2019,
+    "AuthorId": 4,
+    "CategoryId": 1
+  },
+  {
+    "Title": "Modern Egypt: A Political History",
+    "Price": 340.00,
+    "AvailableCopies": 6,
+    "TotalCopies": 6,
+    "PublicationYear": 2021,
+    "AuthorId": 6,
+    "CategoryId": 2
+  },
+  {
+    "Title": "Egyptian Kitchen Classics",
+    "Price": 180.00,
+    "AvailableCopies": 5,
+    "TotalCopies": 5,
+    "PublicationYear": 2019,
+    "AuthorId": 4,
+    "CategoryId": 4
+  },
+  {
+    "Title": "Spices of the Middle East",
+    "Price": 200.00,
+    "AvailableCopies": 6,
+    "TotalCopies": 6,
+    "PublicationYear": 2021,
+    "AuthorId": 3,
+    "CategoryId": 4
+  },
+  {
+    "Title": "C# Fundamentals",
+    "Price": 320.00,
+    "AvailableCopies": 6,
+    "TotalCopies": 6,
+    "PublicationYear": 2021,
+    "AuthorId": 5,
+    "CategoryId": 7
+  },
+  {
+    "Title": "Mastering .NET",
+    "Price": 450.00,
+    "AvailableCopies": 5,
+    "TotalCopies": 5,
+    "PublicationYear": 2023,
+    "AuthorId": 4,
+    "CategoryId": 7
+  },
+  {
+    "Title": "Data Structures in Java",
+    "Price": 350.00,
+    "AvailableCopies": 6,
+    "TotalCopies": 6,
+    "PublicationYear": 2022,
+    "AuthorId": 2,
+    "CategoryId": 7
+  },
+  {
+    "Title": "Algorithms Explained",
+    "Price": 400.00,
+    "AvailableCopies": 5,
+    "TotalCopies": 5,
+    "PublicationYear": 2024,
+    "AuthorId": 3,
+    "CategoryId": 7
+  }
+]
