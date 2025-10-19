@@ -89,7 +89,7 @@ namespace GymManagmentPL.Controllers
 
                 ModelState.AddModelError("DataInvalid", "Check Data And Missing Fields");
                 return View(nameof(Create), CreatedMember);
-            }
+            } //Validation ده هو هو نفس الكومنت اللي تحت بس عليه 
 
             //if (!ModelState.IsValid)
             //{
@@ -109,6 +109,48 @@ namespace GymManagmentPL.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+        #endregion
+
+        #region Edit Member 
+
+        public ActionResult MemberEdit(int id)
+        {
+            if(id<=0)
+            {
+                TempData["ErrorMessage"] = "Id Of Member Can Not Be 0 Or Negative Number";
+                return RedirectToAction(nameof(Index));
+            }
+            var Member = _memberservice.GetMemberToUpdateById(id);
+
+            if(Member == null)
+            {
+                TempData["ErrorMessage"] = "Member Not Found";
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(Member);
+        }
+
+        [HttpPost]
+        public ActionResult MemberEdit([FromRoute] int id,MemberToUpdateViewModel MemberToEdit)
+        {
+            if(!ModelState.IsValid) 
+                return View(MemberToEdit);
+
+            var Result = _memberservice.UpdateMemberDetails(id, MemberToEdit);
+            if(Result)
+            {
+                TempData["SuccessMessage"] = "Member Updated Successfully";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Member Failed To Updated ";
+
+            }
+            return RedirectToAction(nameof(Index));
+
+        }
 
         #endregion
 

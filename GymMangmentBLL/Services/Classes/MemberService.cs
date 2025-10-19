@@ -237,8 +237,14 @@ namespace GymMangmentBLL.Services.Classes
                 ////If One Of Them Exists Return False
                 //if (emailExists || phoneExists) return false; // ==
 
-                if (IsEmailExists(UpdatedMember.Email) || IsPhoneExists(UpdatedMember.Phone)) return false;
+                //if (IsEmailExists(UpdatedMember.Email) || IsPhoneExists(UpdatedMember.Phone)) return false;
+                var emailExist = _unitOfWork.GetRepository<Member>()
+                    .GetAll(x=>x.Email == UpdatedMember.Email && x.Id != MemberId);
 
+                var phoneExist = _unitOfWork.GetRepository<Member>()
+                .GetAll(x => x.PhoneNumber == UpdatedMember.Phone && x.Id != MemberId);
+
+                if(emailExist.Any() || phoneExist.Any()) return false; 
                 var Repo = _unitOfWork.GetRepository<Member>();
 
                 #region Before Using AutoMapper Pattern
