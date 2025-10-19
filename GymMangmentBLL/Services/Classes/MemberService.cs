@@ -286,10 +286,13 @@ namespace GymMangmentBLL.Services.Classes
             var member = Repo.GetById(MemberId);
             if (member == null) return false;
 
-            var HasActiveMembership = _unitOfWork.GetRepository<MemberSession>()
-                .GetAll(x => x.MemberId == MemberId && x.Session.StartDate > DateTime.Now).Any();
+            var SessionIDs = _unitOfWork.GetRepository<MemberSession>()
+                .GetAll(x => x.MemberId == MemberId).Select(x => x.SessionId);
 
-            if (HasActiveMembership) return false;
+            var HasFutureSession = _unitOfWork.GetRepository<Session>()
+                .GetAll(x => SessionIDs.Contains(x.Id) && x.StartDate > DateTime.Now).Any();
+
+            if (HasFutureSession) return false;
             var MemberShips = RepoMemberShip.GetAll(x => x.MemberId == MemberId);
 
             try
