@@ -13,7 +13,7 @@ namespace GymManagmentDAL.Entities
         public string Name { get; set; }= null!;
         public string Email { get; set; }= null!;
         public string PhoneNumber { get; set; } = null!;
-        public DateOnly DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
         public Gender Gender { get; set; }
         public Address Address { get; set; }= null!;
     }
@@ -22,8 +22,8 @@ namespace GymManagmentDAL.Entities
     public class Address
     {
         public int BuildingNumber { get; set; }
-        public string Street { get; set; }
-        public string City { get; set; }
+        public string Street { get; set; } = null!;
+        public string City { get; set; } = null!;
 
     }
 

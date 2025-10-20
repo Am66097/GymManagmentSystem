@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GymMangmentBLL.ViewModels.TrainerViewModels
 {
-    internal class CreateTrainerViewModel
+    public class CreateTrainerViewModel
     {
         [Required(ErrorMessage = "Name Is Required")]
         [StringLength(50, MinimumLength = 2, ErrorMessage = "Name Must Be Between 2 And 50 Char")]
@@ -30,7 +30,7 @@ namespace GymMangmentBLL.ViewModels.TrainerViewModels
 
         [Required(ErrorMessage = "Date Of Birth Is Required")]
         [DataType(DataType.Date)]
-        public DateOnly DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
 
         [Required(ErrorMessage = "Specialty Is Required")]
         public Specialties Specialty { get; set; } 

@@ -73,24 +73,21 @@ namespace GymMangmentBLL
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src =>
                     $"{src.Address.BuildingNumber}, {src.Address.Street}, {src.Address.City}"));
 
-            //  من Member → MemberToUpdateViewModel
+            // من Member → MemberToUpdateViewModel
             CreateMap<Member, MemberToUpdateViewModel>()
                 .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.PhoneNumber))
                 .ForMember(dest => dest.BuildingNumber, opt => opt.MapFrom(src => src.Address.BuildingNumber))
-                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.Address.City))
-                .ForMember(dest => dest.Street, opt => opt.MapFrom(src => src.Address.Street));
+                .ForMember(dest => dest.Street, opt => opt.MapFrom(src => src.Address.Street))
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.Address.City));
 
-            //  من MemberToUpdateViewModel → Member (للتحديث)
-            CreateMap<MemberToUpdateViewModel, Member>()
-                .ForMember(dest => dest.Name, opt => opt.Ignore()) // مش هتتغير
-                .ForMember(dest => dest.Photo, opt => opt.Ignore()) // مش هتتغير
-                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Phone))
-                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => new Address
-                {
-                    BuildingNumber = src.BuildingNumber,
-                    Street = src.Street,
-                    City = src.City
-                }));
+            CreateMap<MemberToUpdateViewModel, Member>() // for update
+       .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Phone))
+       .ForMember(dest => dest.Address, opt => opt.MapFrom(src => new Address
+       {
+           BuildingNumber = src.BuildingNumber,
+           Street = src.Street,
+           City = src.City
+       })); 
 
 
             //  من HealthRecord → HealthRecordViewModel
@@ -128,34 +125,54 @@ namespace GymMangmentBLL
 
             //  من Trainer → TrainerViewModel
             CreateMap<Trainer, TrainerViewModel>()
-                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.PhoneNumber))
-                .ForMember(dest => dest.Specialty, opt => opt.MapFrom(src => src.Specialties.ToString()))
-                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => new Address
-                {
-                    BuildingNumber = src.Address.BuildingNumber,
-                    Street = src.Address.Street,
-                    City = src.Address.City
-                }));
+    .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.PhoneNumber))
+    .ForMember(dest => dest.Specialty, opt => opt.MapFrom(src => src.Specialties.ToString()))
+    .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth)) //  لازم تضيف ده
+    .ForMember(dest => dest.Address, opt => opt.MapFrom(src => new Address
+    {
+        BuildingNumber = src.Address.BuildingNumber,
+        Street = src.Address.Street,
+        City = src.Address.City
+    }));
+
 
             //  من CreateTrainerViewModel → Trainer
             CreateMap<CreateTrainerViewModel, Trainer>()
-                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Phone))
-                .ForMember(dest => dest.Specialties, opt => opt.MapFrom(src => src.Specialty))
-                .ForMember(dest => dest.Address, opt => opt.Ignore()); // هتتعامل مع الـ Address منفصل لو لزم الأمر
+    .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Phone))
+    .ForMember(dest => dest.Specialties, opt => opt.MapFrom(src => src.Specialty))
+    .ForMember(dest => dest.Address, opt => opt.MapFrom(src => new Address
+    {
+        BuildingNumber = src.BuildingNumber,
+        Street = src.Street,
+        City = src.City
+    }))
+    .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth)) //  تأكيد واضح
+    .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender));
 
-            //  من Trainer → TrainerToUpdateViewModel
+           
+
+            // من Trainer → TrainerToUpdateViewModel
             CreateMap<Trainer, TrainerToUpdateViewModel>()
                 .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.PhoneNumber))
-                .ForMember(dest => dest.Specialty, opt => opt.MapFrom(src => src.Specialties))
                 .ForMember(dest => dest.BuildingNumber, opt => opt.MapFrom(src => src.Address.BuildingNumber))
                 .ForMember(dest => dest.Street, opt => opt.MapFrom(src => src.Address.Street))
-                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.Address.City));
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.Address.City))
+                .ForMember(dest => dest.Specialty, opt => opt.MapFrom(src => src.Specialties))
+                .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender));
 
-            //  من TrainerToUpdateViewModel → Trainer
+            // من TrainerToUpdateViewModel → Trainer
             CreateMap<TrainerToUpdateViewModel, Trainer>()
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Phone))
                 .ForMember(dest => dest.Specialties, opt => opt.MapFrom(src => src.Specialty))
-                .ForMember(dest => dest.Address, opt => opt.Ignore()); // عشان هنحدث العنوان يدويًا جوه السيرفس
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => new Address
+                {
+                    BuildingNumber = src.BuildingNumber,
+                    Street = src.Street,
+                    City = src.City
+                }))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
+                .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth));
             #endregion
 
 

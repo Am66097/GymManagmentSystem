@@ -4,6 +4,7 @@ using GymManagmentDAL.Repositories.Classes;
 using GymManagmentDAL.Repositories.Interfaces;
 using GymMangmentBLL.Services.Interfaces;
 using GymMangmentBLL.ViewModels.MemberViewModels;
+using GymMangmentBLL.ViewModels.SessionViewModels;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
@@ -181,7 +182,7 @@ namespace GymMangmentBLL.Services.Classes
         public HealthRecordViewModel GetHealthRecordDetailsById(int MemberId)
         {
             var healthRecord = _unitOfWork.GetRepository<HealthRecord>().GetById(MemberId);
-            if (healthRecord == null) return null;
+            if (healthRecord == null) return null!;
             #region Before Using AutoMapper Pattern
             //var healthRecordViewModel = new HealthRecordViewModel
             //{
@@ -219,7 +220,7 @@ namespace GymMangmentBLL.Services.Classes
 
             #region After Using AutoMapper Pattern
             var member = _unitOfWork.GetRepository<Member>().GetById(MemberId);
-            if (member == null) return null;
+            if (member == null) return null!;
             return _mapper.Map<MemberToUpdateViewModel>(member); 
             #endregion
 
@@ -264,8 +265,11 @@ namespace GymMangmentBLL.Services.Classes
 
                 #region After Using AutoMapper Pattern
                 var oldMember = _unitOfWork.GetRepository<Member>().GetById(MemberId);
+                if (oldMember == null) return false;
                 _mapper.Map(UpdatedMember, oldMember);
                 oldMember.UpdatedAt = DateTime.Now;
+             
+
                 return _unitOfWork.SaveChanges() > 0; 
                 #endregion
 
