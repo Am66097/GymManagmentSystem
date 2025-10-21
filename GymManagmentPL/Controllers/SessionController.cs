@@ -74,12 +74,67 @@ namespace GymManagmentPL.Controllers
             {
 
                 TempData["ErrorMessage"] = "Failed To Create Session !";
-                    DropDowns();
+                DropDowns();
                 return View(CreatedSession);
             }
         }
 
         #endregion
+
+        #region Edit Sessions
+
+        public ActionResult Edit(int id)
+        {
+            if (id <= 0)
+            {
+                TempData["ErrorMessage"] = "Invalid Session Id";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var Session = _sessionService.GetSessionForUpdate(id);
+            if (Session is null)
+            {
+                TempData["ErrorMessage"] = "Session Not Found";
+                return RedirectToAction(nameof(Index));
+            }
+            DropDownsForTrainers();
+            return View(Session);
+        }
+
+        [HttpPost]
+        public ActionResult Edit([FromRoute]int id, UpdateSessionViewModel UpdatedSession)
+        {
+            if (!ModelState.IsValid)
+            {
+                DropDownsForTrainers();
+                return View(UpdatedSession);
+            }
+             
+            var result =_sessionService.UpdateSession(id, UpdatedSession);
+            if (result)
+            {
+                TempData["SuccessMessage"] = "Session Updated Successfully";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed To Update Session !";
+
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        #endregion
+
+
+
+
+
+
+
+
+
+
 
         #region Helper Method
 
@@ -92,6 +147,25 @@ namespace GymManagmentPL.Controllers
             ViewBag.Trainers = new SelectList(Trainers, "Id", "Name");
 
         }
+        private void DropDownsForCategories()
+        {
+            var Categories = _sessionService.GetCategoryForDropDown();
+            ViewBag.Categories = new SelectList(Categories, "Id", "Name");
+
+         
+
+        }
+        private void DropDownsForTrainers()
+        {
+         
+
+            var Trainers = _sessionService.GetTrainersForDropDown();
+            ViewBag.Trainers = new SelectList(Trainers, "Id", "Name");
+
+        }
+
+
+
         #endregion
 
     }

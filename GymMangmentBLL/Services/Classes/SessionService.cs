@@ -17,7 +17,7 @@ namespace GymMangmentBLL.Services.Classes
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public SessionService(IUnitOfWork unitOfWork , IMapper mapper)
+        public SessionService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -112,45 +112,51 @@ namespace GymMangmentBLL.Services.Classes
 
         }
 
+        
         public UpdateSessionViewModel? GetSessionForUpdate(int sessionId)
         {
-             var session = _unitOfWork.GetRepository<Session>().GetById(sessionId);
+            var session = _unitOfWork.GetRepository<Session>().GetById(sessionId);
             if (session == null) return null;
-            if (!IsSessionAvalibleToUpdate(session)) return null;
-            var mappedSession = _mapper.Map<UpdateSessionViewModel>(session);
-            return mappedSession;
 
+            if (!IsSessionAvailableToUpdate(session)) return null; // هيرجع null لو مش upcoming أو فيه حجوزات
+
+            return _mapper.Map<UpdateSessionViewModel>(session);
         }
 
+        
         public bool UpdateSession(int sessionId, UpdateSessionViewModel UpdatedSession)
         {
             try
             {
                 var session = _unitOfWork.sessionRepository.GetById(sessionId);
-                if(!IsSessionAvalibleToUpdate(session)) return false;
-                if(!IsTrainerExists(UpdatedSession.TrainerId)) return false;
-                if(!IsStartDateBeforeEndDate(UpdatedSession.StartDate, UpdatedSession.EndDate)) return false;
+                if (session == null) return false;
+
+                // السماح بالتحديث فقط إذا كانت الجلسة قادمة (Upcoming) ولا يوجد حجوزات
+                if (!IsSessionAvailableToUpdate(session)) return false;
+
+                if (!IsTrainerExists(UpdatedSession.TrainerId)) return false;
+                if (!IsStartDateBeforeEndDate(UpdatedSession.StartDate, UpdatedSession.EndDate)) return false;
 
                 _mapper.Map(UpdatedSession, session);
-                session!.UpdatedAt = DateTime.Now;
+                session.UpdatedAt = DateTime.Now;
                 _unitOfWork.GetRepository<Session>().Update(session);
                 return _unitOfWork.SaveChanges() > 0;
-
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Update Faild Session : {ex}");
+                Console.WriteLine($"Update Failed Session : {ex}");
                 return false;
             }
         }
+
         public bool DeleteSession(int sessionId)
         {
-         
+
             try
             {
                 var session = _unitOfWork.GetRepository<Session>().GetById(sessionId);
                 if (session == null) return false;
-                if (!IsSessionAvalibleToRemove(session)) return false;
+                if (!IsSessionAvailableToRemove(session)) return false;
                 _unitOfWork.GetRepository<Session>().Delete(session);
                 return _unitOfWork.SaveChanges() > 0;
             }
@@ -164,51 +170,45 @@ namespace GymMangmentBLL.Services.Classes
 
         public IEnumerable<TrainerSelectViewModel> GetTrainersForDropDown()
         {
-           var Trainers=_unitOfWork.GetRepository<Trainer>().GetAll();
-           return _mapper.Map<IEnumerable<TrainerSelectViewModel>>(Trainers);
+            var Trainers = _unitOfWork.GetRepository<Trainer>().GetAll();
+            return _mapper.Map<IEnumerable<TrainerSelectViewModel>>(Trainers);
         }
 
         public IEnumerable<CategorySelectViewModel> GetCategoryForDropDown()
         {
-          var categories=_unitOfWork.GetRepository<Category>().GetAll();
+            var categories = _unitOfWork.GetRepository<Category>().GetAll();
             return _mapper.Map<IEnumerable<CategorySelectViewModel>>(categories);
 
         }
 
         #region Helper Methods
 
-        private bool IsSessionAvalibleToRemove(Session session)
-        {
-
-            //A session is available to delete if it has no booked members
-            var bookedMembersCount = _unitOfWork.sessionRepository.GetCountOfBookedSlots(session.Id);
-            return bookedMembersCount == 0;
-
-            //if session is uncoming you can delete it
-            if(session.StartDate > DateTime.Now) return true;
-
-
-            //If Session Started you can't delete it
-            if (session.StartDate <= DateTime.Now && session.EndDate>DateTime.Now) return false;
-
-            return true;
-
-        }
-        private bool IsSessionAvalibleToUpdate(Session session)
-        { 
         
-            //A session is available to update if it has no booked members
+        private bool IsSessionAvailableToRemove(Session session)
+        {
+            if (session == null) return false;
+
             var bookedMembersCount = _unitOfWork.sessionRepository.GetCountOfBookedSlots(session.Id);
-            return bookedMembersCount == 0;
+            if (bookedMembersCount > 0) return false;
 
-            //If Session Completed you can't update it
-            if(session.EndDate < DateTime.Now) return false;
+            // نسمح بالحذف فقط إذا كانت قادمة (أو - حسب سياساتك - يمكنك السماح بحذف أي جلسة ليس لها حجوزات)
+            return session.StartDate > DateTime.Now;
+        }
+        
+        private bool IsSessionAvailableToUpdate(Session session)
+        {
+            if (session == null) return false;
 
-            //If Session Started you can't update it
-            if(session.StartDate <= DateTime.Now) return false;
+            var now = DateTime.Now;
+
+            // يجب أن تكون جلسة قادمة (StartDate > الآن)
+            if (session.StartDate <= now) return false;
+
+            // لا نسمح بتعديل الجلسات التي لها أعضاء حجزوا أماكن
+            var bookedMembersCount = _unitOfWork.sessionRepository.GetCountOfBookedSlots(session.Id);
+            if (bookedMembersCount > 0) return false;
 
             return true;
-
         }
 
         private bool IsTrainerExists(int trainerId)
@@ -224,10 +224,10 @@ namespace GymMangmentBLL.Services.Classes
         }
         private bool IsStartDateBeforeEndDate(DateTime StartDate, DateTime EndDate)
         {
-            return StartDate < EndDate && DateTime.Now>StartDate;
+            return StartDate < EndDate && DateTime.Now < StartDate;
         }
 
-        
+
 
 
 
