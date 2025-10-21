@@ -91,5 +91,24 @@ namespace GymManagmentPL.Controllers
         }
 
         #endregion
+
+        #region Delete Plans
+
+        [HttpPost]
+        public ActionResult Activate(int id)
+        {
+        var result= _planService.TogglePlanStatus(id);
+            if (result)
+                TempData["SuccessMessage"] = "Plan Status Changed Successfully";
+
+            else
+                TempData["ErrorMessage"] = "Failed To Change Plan Status!";
+
+            return RedirectToAction(nameof(Index));
+
+        }
+
+
+        #endregion
     }
 }
