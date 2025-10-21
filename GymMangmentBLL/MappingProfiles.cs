@@ -31,9 +31,14 @@ namespace GymMangmentBLL
 
             CreateMap<UpdateSessionViewModel, Session>();
 
+            CreateMap<Trainer, TrainerSelectViewModel>();
+
+            CreateMap<Category, CategorySelectViewModel>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.CategoryName));
+
             #endregion
 
-            #region AutoMappering For Member 
+                #region AutoMappering For Member 
 
             //  من CreateMemberViewModel → Member
             CreateMap<CreateMemberViewModel, Member>()

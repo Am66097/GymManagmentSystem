@@ -20,5 +20,9 @@ namespace GymMangmentBLL.Services.Interfaces
         bool UpdateSession(int sessionId, UpdateSessionViewModel UpdatedSession);
 
         bool DeleteSession(int sessionId);
+
+        IEnumerable<TrainerSelectViewModel> GetTrainersForDropDown();
+        IEnumerable<CategorySelectViewModel> GetCategoryForDropDown();
+
     }
 }

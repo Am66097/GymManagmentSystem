@@ -161,7 +161,20 @@ namespace GymMangmentBLL.Services.Classes
             }
 
         }
-        
+
+        public IEnumerable<TrainerSelectViewModel> GetTrainersForDropDown()
+        {
+           var Trainers=_unitOfWork.GetRepository<Trainer>().GetAll();
+           return _mapper.Map<IEnumerable<TrainerSelectViewModel>>(Trainers);
+        }
+
+        public IEnumerable<CategorySelectViewModel> GetCategoryForDropDown()
+        {
+          var categories=_unitOfWork.GetRepository<Category>().GetAll();
+            return _mapper.Map<IEnumerable<CategorySelectViewModel>>(categories);
+
+        }
+
         #region Helper Methods
 
         private bool IsSessionAvalibleToRemove(Session session)
@@ -211,8 +224,10 @@ namespace GymMangmentBLL.Services.Classes
         }
         private bool IsStartDateBeforeEndDate(DateTime StartDate, DateTime EndDate)
         {
-            return StartDate < EndDate;
+            return StartDate < EndDate && DateTime.Now>StartDate;
         }
+
+        
 
 
 
