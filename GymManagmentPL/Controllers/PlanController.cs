@@ -12,12 +12,38 @@ namespace GymManagmentPL.Controllers
         {
             this._planService = planService;
         }
+
         #region Get All Plans
-        public IActionResult Index()
+        public ActionResult Index()
         {
             var plans = _planService.GetAllPlans();
             return View(plans);
-        } 
+        }
+
+        #endregion
+
+        #region Details Of Plans 
+
+        public ActionResult Details(int id)
+        {
+            if(id<=0)
+            {
+                TempData["ErrorMessage"] = "Invalid Plan Id";
+                return RedirectToAction(nameof(Index));
+
+            }
+            var plan = _planService.GetPlanById(id);
+
+            if(plan is null)
+            {
+                TempData["ErrorMessage"] = "Plan Not Found";
+                return RedirectToAction(nameof(Index));
+
+            }
+            return View(plan);
+        }
+
+
 
         #endregion
     }
