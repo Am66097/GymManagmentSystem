@@ -64,7 +64,7 @@ namespace GymMangmentBLL.Services.Classes
         }
 
 
-        UpdatePlanViewModel? IPlanService.GetPlanToUpdate(int PlanId)
+     public   UpdatePlanViewModel? GetPlanToUpdate(int PlanId)
         {
             var plan = _unitOfWork.GetRepository<Plan>().GetById(PlanId);
             if (plan == null || plan.IsActive == false || HasActiveMemberShips(PlanId)) return null;
@@ -82,7 +82,7 @@ namespace GymMangmentBLL.Services.Classes
             return _mapper.Map<UpdatePlanViewModel>(plan); // Using AutoMapper Pattern
         }
 
-        bool IPlanService.UpdatePlan(int PlanId, UpdatePlanViewModel UpdatedPlan)
+     public   bool UpdatePlan(int PlanId, UpdatePlanViewModel UpdatedPlan)
         {
             var Plan = _unitOfWork.GetRepository<Plan>().GetById(PlanId);
             if (Plan == null || HasActiveMemberShips(PlanId)) return false;

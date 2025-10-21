@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace GymMangmentBLL.Services.Interfaces
 {
-    internal interface IPlanService
+    public interface IPlanService
     {
-        IEnumerable<PlanViewModel>  GetAllPlans();
+        public IEnumerable<PlanViewModel> GetAllPlans();
 
-        PlanViewModel? GetPlanById(int id);
+        public PlanViewModel? GetPlanById(int id);
 
-        UpdatePlanViewModel? GetPlanToUpdate(int PlanId);
+        public UpdatePlanViewModel? GetPlanToUpdate(int PlanId);
 
-        bool UpdatePlan(int PlanId, UpdatePlanViewModel UpdatedPlan);
-        bool TogglePlanStatus(int PlanId);
+        public bool UpdatePlan(int PlanId, UpdatePlanViewModel UpdatedPlan);
+        public bool TogglePlanStatus(int PlanId);
     }
 }
