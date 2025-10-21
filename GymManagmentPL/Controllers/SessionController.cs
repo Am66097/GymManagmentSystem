@@ -1,4 +1,5 @@
 ﻿using GymManagementSystemBLL.ViewModels.SessionViewModels;
+using GymMangmentBLL.Services.Classes;
 using GymMangmentBLL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -126,7 +127,46 @@ namespace GymManagmentPL.Controllers
 
         #endregion
 
+        #region Delete Session 
+        // GET: Session/Delete/4
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+            var session = _sessionService.GetSessionById(id);
+            if (session == null)
+            {
+                TempData["ErrorMessage"] = "Session not found.";
+                return RedirectToAction(nameof(Index));
+            }
 
+            // نبعث الـId للـView علشان الفورم يعرف يحذفه
+            ViewBag.SessionId = id;
+
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            var session = _sessionService.GetSessionById(id);
+            if (session == null)
+            {
+                TempData["ErrorMessage"] = "Session not found.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var result = _sessionService.DeleteSession(id);
+            if (result)
+                TempData["SuccessMessage"] = "Session deleted successfully.";
+            else
+                TempData["ErrorMessage"] = "Failed to delete session (maybe has bookings).";
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
+
+        #endregion
 
 
 
