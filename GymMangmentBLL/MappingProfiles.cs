@@ -23,7 +23,7 @@ namespace GymMangmentBLL
             CreateMap<Session, SessionViewModel>()
          .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.SessionCategory.CategoryName))
          .ForMember(dest => dest.TrainerName, opt => opt.MapFrom(src => src.SessionTrainer.Name))
-         .ForMember(dest => dest.AvailabaleCapacity, opt => opt.Ignore());
+         .ForMember(dest => dest.AvailabaleSlots, opt => opt.Ignore());
 
             CreateMap<CreateSessionViewModel, Session>();
 

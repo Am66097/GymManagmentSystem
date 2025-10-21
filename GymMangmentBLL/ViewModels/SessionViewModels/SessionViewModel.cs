@@ -15,7 +15,7 @@ namespace GymMangmentBLL.ViewModels.SessionViewModels
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int Capacity { get; set; }
-        public int AvailabaleCapacity { get; set; }
+        public int AvailabaleSlots { get; set; }
 
         #region Combuted Properties
 
@@ -28,7 +28,7 @@ namespace GymMangmentBLL.ViewModels.SessionViewModels
             get
             {
                 if (StartDate > DateTime.Now)
-                    return "UnComing";
+                    return "Upcoming";
                 else if (EndDate >= DateTime.Now && StartDate <= DateTime.Now)
                     return "Ongoing";
                 else return "Completed";

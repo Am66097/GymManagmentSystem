@@ -75,7 +75,7 @@ namespace GymMangmentBLL.Services.Classes
             #region After Auto Mapper
             var mappedSessions = _mapper.Map<IEnumerable<Session>, IEnumerable<SessionViewModel>>(Sessions);
             foreach (var session in mappedSessions)
-                session.AvailabaleCapacity = session.Capacity - _unitOfWork.sessionRepository.GetCountOfBookedSlots(session.Id);
+                session.AvailabaleSlots = session.Capacity - _unitOfWork.sessionRepository.GetCountOfBookedSlots(session.Id);
             return mappedSessions;
 
 
@@ -105,14 +105,14 @@ namespace GymMangmentBLL.Services.Classes
 
             #region After Auto Mapper
             var mappedSession = _mapper.Map<Session, SessionViewModel>(session);
-            mappedSession.AvailabaleCapacity = mappedSession.Capacity - _unitOfWork.sessionRepository.GetCountOfBookedSlots(mappedSession.Id);
+            mappedSession.AvailabaleSlots = mappedSession.Capacity - _unitOfWork.sessionRepository.GetCountOfBookedSlots(mappedSession.Id);
             return mappedSession;
             #endregion
 
 
         }
 
-        public UpdateSessionViewModel GetSessionForUpdate(int sessionId)
+        public UpdateSessionViewModel? GetSessionForUpdate(int sessionId)
         {
              var session = _unitOfWork.GetRepository<Session>().GetById(sessionId);
             if (session == null) return null;
