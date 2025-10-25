@@ -1,12 +1,14 @@
 ﻿//using Abp.Domain.Uow;
 using GymManagmentDAL.Data.Context;
 using GymManagmentDAL.Data.DataSeed;
+using GymManagmentDAL.Entities;
 using GymManagmentDAL.Repositories.Classes;
 using GymManagmentDAL.Repositories.Interfaces;
 using GymMangmentBLL;
 using GymMangmentBLL.Services.AttachmentService;
 using GymMangmentBLL.Services.Classes;
 using GymMangmentBLL.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace GymManagmentPL
@@ -15,6 +17,11 @@ namespace GymManagmentPL
     {
         public static void Main(string[] args)
         {
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
+            {
+                Console.WriteLine($"Unhandled Exception: {e.ExceptionObject}");
+            };
+
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -51,27 +58,36 @@ namespace GymManagmentPL
             
             using var scope = app.Services.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<GymDbContext>();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
             var pendingMigarations = dbContext.Database.GetPendingMigrations();
             if(pendingMigarations?.Any() ?? false)
             {
                 dbContext.Database.Migrate();
             }
 
+
             GymDbContextSeeding.seedData(dbContext);
+            IdentityDbContextSeeding.SeedData(roleManager,userManager);
             #endregion
 
 
 
             // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage(); // new
-                app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+
+                app.UseHttpsRedirection();
             app.UseRouting();
 
             app.UseAuthorization();
@@ -82,7 +98,6 @@ namespace GymManagmentPL
                 pattern: "{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
 
-            app.UseDeveloperExceptionPage(); // new
 
 
             app.Run();
