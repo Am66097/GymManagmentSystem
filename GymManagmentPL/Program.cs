@@ -48,8 +48,21 @@ namespace GymManagmentPL
             builder.Services.AddScoped<IPlanService, PlanService>();
             builder.Services.AddScoped<ISessionService, SessionService>();
             builder.Services.AddScoped<IAttachmentService,AttachmetnService>();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(config=>
+            { 
+                config.User.RequireUniqueEmail = true;
 
+            }).AddEntityFrameworkStores<GymDbContext>();
 
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/Login";
+                options.AccessDeniedPath= "/Account/AccessDenied";
+            });
+
+            builder.Services.AddIdentityCore<ApplicationUser>()
+                .AddEntityFrameworkStores<GymDbContext>();
+                           
 
 
             var app = builder.Build(); 
