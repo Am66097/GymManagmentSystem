@@ -4,6 +4,7 @@ using GymManagmentDAL.Data.DataSeed;
 using GymManagmentDAL.Repositories.Classes;
 using GymManagmentDAL.Repositories.Interfaces;
 using GymMangmentBLL;
+using GymMangmentBLL.Services.AttachmentService;
 using GymMangmentBLL.Services.Classes;
 using GymMangmentBLL.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -39,6 +40,10 @@ namespace GymManagmentPL
             builder.Services.AddScoped<ITrainerService, TrainerService>();
             builder.Services.AddScoped<IPlanService, PlanService>();
             builder.Services.AddScoped<ISessionService, SessionService>();
+            builder.Services.AddScoped<IAttachmentService,AttachmetnService>();
+
+
+
 
             var app = builder.Build(); 
 
@@ -60,6 +65,7 @@ namespace GymManagmentPL
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
+                app.UseDeveloperExceptionPage(); // new
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
@@ -76,9 +82,12 @@ namespace GymManagmentPL
                 pattern: "{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
 
-            
+            app.UseDeveloperExceptionPage(); // new
+
 
             app.Run();
+           
+
         }
     }
 }

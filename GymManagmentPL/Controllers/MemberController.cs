@@ -74,14 +74,14 @@ namespace GymManagmentPL.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateMember(CreateMemberViewModel CreatedMember)
+        public ActionResult Create(CreateMemberViewModel CreatedMember)
         {
             
-            Console.WriteLine("=== ENTERED CreateMember POST ===");
+            //Console.WriteLine("=== ENTERED CreateMember POST ===");
 
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("=== MODEL STATE INVALID ===");
+                //Console.WriteLine("=== MODEL STATE INVALID ===");
                 foreach (var error in ModelState)
                 {
                     Console.WriteLine($"{error.Key}: {string.Join(", ", error.Value.Errors.Select(e => e.ErrorMessage))}");
