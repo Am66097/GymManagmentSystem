@@ -47,7 +47,6 @@
                 <input asp-for="PhotoFile" type="file" class="form-control" accept="image/*" id="photoInput" required />
                 <span asp-validation-for="PhotoFile" class="text-danger"></span>
                 <small class="form-text text-muted">Max size: 5 MB. Allowed types: JPG, PNG, JPEG (Required)</small>
-            </div>
 
                 <div class="col-12 col-md-6">
                     <label asp-for="Name" class="form-label"></label>
@@ -81,6 +80,7 @@
 
                 </div>
 
+
             </div>
             <div class="section-header mb-3 mt-4">
                 <h5 class="text-primary fw-bold">Address Information</h5>
@@ -106,6 +106,7 @@
                 </div>
             </div>
         </div>
+    </div>
 
         <!-- Health Data -->
         <div class="tab-pane fade" id="health-info" role="tabpanel" aria-labelledby="health-tab">
