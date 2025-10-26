@@ -42,7 +42,7 @@ namespace GymManagmentDAL.Data.DataSeed
                         FirstName = "Amin",
                         LastName = "Ashraf",
                         UserName = "AminAshraf",
-                        Email = "AminAshraf@gmail.com",
+                        Email = "AminAshraf@gmail.com".ToLower(),
                         PhoneNumber = "01123953371"
                     };
                     userManager.CreateAsync(mainAdmin,"P@ssw0rd").Wait();
@@ -53,7 +53,7 @@ namespace GymManagmentDAL.Data.DataSeed
                         FirstName = "Mohamed",
                         LastName = "Ashraf",
                         UserName = "MohamedAshraf",
-                        Email = "MohamedAshraf@gmail.com",
+                        Email = "MohamedAshraf@gmail.com".ToLower(),
                         PhoneNumber = "01523953371"
                     };
                     userManager.CreateAsync(Admin, "P@ssw0rd").Wait();
