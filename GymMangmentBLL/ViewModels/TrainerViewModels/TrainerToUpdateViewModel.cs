@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GymMangmentBLL.ViewModels.TrainerViewModels
 {
-    internal class TrainerToUpdateViewModel
+    public class TrainerToUpdateViewModel
     {
         public string Name { get; set; } = null!;
 
@@ -27,7 +27,7 @@ namespace GymMangmentBLL.ViewModels.TrainerViewModels
 
         [Required(ErrorMessage = "Date Of Birth Is Required")]
         [DataType(DataType.Date)]
-        public DateOnly DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
 
         [Required(ErrorMessage = "Specialty Is Required")]
         public Specialties Specialty { get; set; }

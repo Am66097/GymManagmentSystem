@@ -12,7 +12,7 @@ namespace GymManagmentDAL.Entities
 
         #region Properties
 
-        public string Photo { get; set; } = null!;
+        public string? Photo { get; set; } 
 
         #endregion
 

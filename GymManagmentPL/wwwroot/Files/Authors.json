@@ -1,0 +1,32 @@
+[
+  {
+    "FirstName": "Ahmed",
+    "LastName": "Ali",
+    "DateOfBirth": "1975-03-15"
+  },
+  {
+    "FirstName": "Sara",
+    "LastName": "Hassan",
+    "DateOfBirth": "1980-07-22"
+  },
+  {
+    "FirstName": "Omar",
+    "LastName": "Khaled",
+    "DateOfBirth": "1990-11-05"
+  },
+  {
+    "FirstName": "Mona",
+    "LastName": "Gaber",
+    "DateOfBirth": "1985-04-09"
+  },
+  {
+    "FirstName": "Khaled",
+    "LastName": "Nasser",
+    "DateOfBirth": "1978-12-01"
+  },
+  {
+    "FirstName": "Layla",
+    "LastName": "Tawfik",
+    "DateOfBirth": "1992-08-17"
+  }
+]

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GymMangmentBLL.ViewModels.MemberViewModels
 {
-    internal class MemberToUpdateViewModel
+    public class MemberToUpdateViewModel
     {
         public string Name { get; set; } = null!;
         public string? Photo { get; set; }
@@ -26,7 +26,7 @@ namespace GymMangmentBLL.ViewModels.MemberViewModels
 
         [Required(ErrorMessage = "Date Of Birth Is Required")]
         [DataType(DataType.Date)]
-        public DateOnly DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
 
         [Required(ErrorMessage = "Building Number Is Required")]
         [Range(1, 9000, ErrorMessage = "Building Number Must Be Between 1 And 9000")]

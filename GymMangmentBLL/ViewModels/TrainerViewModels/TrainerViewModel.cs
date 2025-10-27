@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GymMangmentBLL.ViewModels.TrainerViewModels
 {
-    internal class TrainerViewModel
+    public class TrainerViewModel
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;
@@ -15,6 +15,7 @@ namespace GymMangmentBLL.ViewModels.TrainerViewModels
         public string Email { get; set; } = null!;
         public string Specialty { get; set; } = null!;
         public Address Address { get; set; } = null!;
+        public DateTime DateOfBirth { get; set; }
 
         List<Session> Sessions { get; set; } = null!;
     }

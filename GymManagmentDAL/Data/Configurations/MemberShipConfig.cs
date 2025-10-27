@@ -18,7 +18,10 @@ namespace GymManagmentDAL.Data.Configurations
                 .HasDefaultValueSql("GETDATE()");
 
             builder.HasKey(x => new { x.MemberId, x.PlanId });
-            builder.Ignore(x => x.MemberId);
+            //builder.Ignore(x => x.MemberId);
+
+
+
         }
     }
 }

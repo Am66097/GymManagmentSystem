@@ -1,4 +1,4 @@
-//using Abp.Domain.Uow;
+﻿//using Abp.Domain.Uow;
 using GymManagmentDAL.Data.Context;
 using GymManagmentDAL.Data.DataSeed;
 using GymManagmentDAL.Repositories.Classes;
@@ -35,6 +35,8 @@ namespace GymManagmentPL
             builder.Services.AddScoped<ISessionRepository, SessionRepository>();
             builder.Services.AddAutoMapper(x=>x.AddProfile(new MappingProfiles()));
             builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+            builder.Services.AddScoped<IMemberService, MemberService>();
+            builder.Services.AddScoped<ITrainerService, TrainerService>();
 
             var app = builder.Build(); 
 
@@ -71,6 +73,8 @@ namespace GymManagmentPL
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
+
+            
 
             app.Run();
         }

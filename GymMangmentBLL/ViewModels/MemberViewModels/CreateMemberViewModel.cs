@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GymMangmentBLL.ViewModels.MemberViewModels
 {
-    internal class CreateMemberViewModel
+    public class CreateMemberViewModel
     {
         [Required(ErrorMessage ="Name Is Required")]
         [StringLength(50,MinimumLength =2,ErrorMessage ="Name Must Be Between 2 And 50 Char")]
@@ -29,7 +29,7 @@ namespace GymMangmentBLL.ViewModels.MemberViewModels
 
         [Required(ErrorMessage ="Date Of Birth Is Required")]
         [DataType(DataType.Date)]
-        public DateOnly DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
 
         [Required(ErrorMessage ="Gender Is Required")]
         public Gender Gender { get; set; }
@@ -38,7 +38,7 @@ namespace GymMangmentBLL.ViewModels.MemberViewModels
         [Range(1,9000,ErrorMessage ="Building Number Must Be Between 1 And 9000")]
         public int BuildingNumber { get; set; }
 
-        [Required(ErrorMessage ="Buildin Is Required")]
+        [Required(ErrorMessage ="Street Is Required")]
         [StringLength(30,MinimumLength =2,ErrorMessage ="Street Must Be Between 2 And 30 Chars")]
         public string Street { get; set; } = null!;
 
@@ -49,7 +49,7 @@ namespace GymMangmentBLL.ViewModels.MemberViewModels
         public string City { get; set; } = null!;
 
         [Required(ErrorMessage = "Health Record Is Required")]
-        public HealthRecordViewModel HealthRecordViewModel { get; set; } = null;
-    
+        public HealthRecordViewModel HealthRecordViewModel { get; set; } = new HealthRecordViewModel();
+
     }
 }

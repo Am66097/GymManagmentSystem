@@ -4,6 +4,7 @@ using GymManagmentDAL.Repositories.Classes;
 using GymManagmentDAL.Repositories.Interfaces;
 using GymMangmentBLL.Services.Interfaces;
 using GymMangmentBLL.ViewModels.MemberViewModels;
+using GymMangmentBLL.ViewModels.SessionViewModels;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace GymMangmentBLL.Services.Classes
 {
-    internal class MemberService : IMemberService
+    public class MemberService : IMemberService
     {
         #region Before Useing Unit Of Work Pattern
         //private readonly IGenericRepository<Member> _memberRepository;
@@ -181,7 +182,7 @@ namespace GymMangmentBLL.Services.Classes
         public HealthRecordViewModel GetHealthRecordDetailsById(int MemberId)
         {
             var healthRecord = _unitOfWork.GetRepository<HealthRecord>().GetById(MemberId);
-            if (healthRecord == null) return null;
+            if (healthRecord == null) return null!;
             #region Before Using AutoMapper Pattern
             //var healthRecordViewModel = new HealthRecordViewModel
             //{
@@ -219,7 +220,7 @@ namespace GymMangmentBLL.Services.Classes
 
             #region After Using AutoMapper Pattern
             var member = _unitOfWork.GetRepository<Member>().GetById(MemberId);
-            if (member == null) return null;
+            if (member == null) return null!;
             return _mapper.Map<MemberToUpdateViewModel>(member); 
             #endregion
 
@@ -237,8 +238,14 @@ namespace GymMangmentBLL.Services.Classes
                 ////If One Of Them Exists Return False
                 //if (emailExists || phoneExists) return false; // ==
 
-                if (IsEmailExists(UpdatedMember.Email) || IsPhoneExists(UpdatedMember.Phone)) return false;
+                //if (IsEmailExists(UpdatedMember.Email) || IsPhoneExists(UpdatedMember.Phone)) return false;
+                var emailExist = _unitOfWork.GetRepository<Member>()
+                    .GetAll(x=>x.Email == UpdatedMember.Email && x.Id != MemberId);
 
+                var phoneExist = _unitOfWork.GetRepository<Member>()
+                .GetAll(x => x.PhoneNumber == UpdatedMember.Phone && x.Id != MemberId);
+
+                if(emailExist.Any() || phoneExist.Any()) return false; 
                 var Repo = _unitOfWork.GetRepository<Member>();
 
                 #region Before Using AutoMapper Pattern
@@ -258,8 +265,11 @@ namespace GymMangmentBLL.Services.Classes
 
                 #region After Using AutoMapper Pattern
                 var oldMember = _unitOfWork.GetRepository<Member>().GetById(MemberId);
+                if (oldMember == null) return false;
                 _mapper.Map(UpdatedMember, oldMember);
                 oldMember.UpdatedAt = DateTime.Now;
+             
+
                 return _unitOfWork.SaveChanges() > 0; 
                 #endregion
 
@@ -280,10 +290,13 @@ namespace GymMangmentBLL.Services.Classes
             var member = Repo.GetById(MemberId);
             if (member == null) return false;
 
-            var HasActiveMembership = _unitOfWork.GetRepository<MemberSession>()
-                .GetAll(x => x.MemberId == MemberId && x.Session.StartDate > DateTime.Now).Any();
+            var SessionIDs = _unitOfWork.GetRepository<MemberSession>()
+                .GetAll(x => x.MemberId == MemberId).Select(x => x.SessionId);
 
-            if (HasActiveMembership) return false;
+            var HasFutureSession = _unitOfWork.GetRepository<Session>()
+                .GetAll(x => SessionIDs.Contains(x.Id) && x.StartDate > DateTime.Now).Any();
+
+            if (HasFutureSession) return false;
             var MemberShips = RepoMemberShip.GetAll(x => x.MemberId == MemberId);
 
             try

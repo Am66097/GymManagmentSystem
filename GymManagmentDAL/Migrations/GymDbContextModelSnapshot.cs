@@ -49,20 +49,21 @@ namespace GymManagmentDAL.Migrations
             modelBuilder.Entity("GymManagmentDAL.Entities.HealthRecord", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<string>("BloodType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Height")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Height")
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Weight")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Weight")
+                        .HasColumnType("decimal(6,2)");
 
                     b.HasKey("Id");
 
@@ -83,8 +84,8 @@ namespace GymManagmentDAL.Migrations
                         .HasColumnName("JoinDate")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<DateOnly>("DateOfBirth")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -105,7 +106,6 @@ namespace GymManagmentDAL.Migrations
                         .HasColumnType("varchar");
 
                     b.Property<string>("Photo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -160,11 +160,11 @@ namespace GymManagmentDAL.Migrations
 
             modelBuilder.Entity("GymManagmentDAL.Entities.MemberShip", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("MemberId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<int>("PlanId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -175,18 +175,16 @@ namespace GymManagmentDAL.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("MemberId1")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("PlanId")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("MemberId1");
+                    b.HasKey("MemberId", "PlanId");
 
                     b.HasIndex("PlanId");
 
@@ -295,8 +293,8 @@ namespace GymManagmentDAL.Migrations
                         .HasColumnName("HireDate")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<DateOnly>("DateOfBirth")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -407,7 +405,7 @@ namespace GymManagmentDAL.Migrations
                 {
                     b.HasOne("GymManagmentDAL.Entities.Member", "Member")
                         .WithMany("MemberShips")
-                        .HasForeignKey("MemberId1")
+                        .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
