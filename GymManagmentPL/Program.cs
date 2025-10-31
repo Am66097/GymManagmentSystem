@@ -1,9 +1,10 @@
-﻿//using Abp.Domain.Uow;
+﻿using GymManagmentDAL.Repositories.Interfaces;
+using GymManagmentDAL.Repositories.Classes;
+
 using GymManagmentDAL.Data.Context;
 using GymManagmentDAL.Data.DataSeed;
 using GymManagmentDAL.Entities;
-using GymManagmentDAL.Repositories.Classes;
-using GymManagmentDAL.Repositories.Interfaces;
+
 using GymMangmentBLL;
 using GymMangmentBLL.Services.AttachmentService;
 using GymMangmentBLL.Services.Classes;
@@ -17,10 +18,10 @@ namespace GymManagmentPL
     {
         public static void Main(string[] args)
         {
-            AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
-            {
-                Console.WriteLine($"Unhandled Exception: {e.ExceptionObject}");
-            };
+            //AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
+            //{
+            //    Console.WriteLine($"Unhandled Exception: {e.ExceptionObject}");
+            //};
 
             var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +50,14 @@ namespace GymManagmentPL
             builder.Services.AddScoped<ISessionService, SessionService>();
             builder.Services.AddScoped<IAttachmentService, AttachmetnService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IMemberShipRepository, MemberShipRepository>();
+            builder.Services.AddScoped<IMemberShipService, MemberShipService>();
+            builder.Services.AddScoped<IPlanRepository, PlanRepository>();
+            builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
+
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(config =>
             {
                 config.User.RequireUniqueEmail = true;
@@ -61,8 +70,8 @@ namespace GymManagmentPL
                 options.AccessDeniedPath = "/Account/AccessDenied";
             });
 
-            builder.Services.AddIdentityCore<ApplicationUser>()
-                .AddEntityFrameworkStores<GymDbContext>();
+            //builder.Services.AddIdentityCore<ApplicationUser>()
+            //    .AddEntityFrameworkStores<GymDbContext>();
 
 
 
@@ -99,16 +108,18 @@ namespace GymManagmentPL
 
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.MapStaticAssets();
+
+
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Account}/{action=Login}/{id?}")
-                .WithStaticAssets();
+                /*.WithStaticAssets()*/;
+
 
 
 

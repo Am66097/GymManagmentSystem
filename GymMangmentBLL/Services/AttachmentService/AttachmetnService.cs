@@ -21,6 +21,9 @@ namespace GymMangmentBLL.Services.AttachmentService
         {
             try
             {
+
+
+
                 if (folderName is null || file is null || file.Length == 0) return null;
 
                 if (file.Length > maxSizeForFile) return null;

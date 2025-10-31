@@ -79,37 +79,55 @@ namespace GymManagmentPL.Controllers
         [HttpPost]
         public ActionResult Create(CreateMemberViewModel CreatedMember)
         {
-            
-            //Console.WriteLine("=== ENTERED CreateMember POST ===");
 
-            if (!ModelState.IsValid)
+            try
             {
-                //Console.WriteLine("=== MODEL STATE INVALID ===");
-                foreach (var error in ModelState)
+                if (CreatedMember.PhotoFile == null)
                 {
-                    Console.WriteLine($"{error.Key}: {string.Join(", ", error.Value.Errors.Select(e => e.ErrorMessage))}");
+                    ModelState.AddModelError("PhotoFile", "Photo is required");
+                    return View(CreatedMember);
                 }
 
-                ModelState.AddModelError("DataInvalid", "Check Data And Missing Fields");
-                return View(nameof(Create), CreatedMember);
-            } //Validation ده هو هو نفس الكومنت اللي تحت بس عليه 
+                //Console.WriteLine("=== ENTERED CreateMember POST ===");
 
-            //if (!ModelState.IsValid)
-            //{
-            //    ModelState.AddModelError("DataInvalid", " Check Data And Missing Fields ");
-            //    return View(nameof(Create), CreatedMember);
-            //}
+                if (!ModelState.IsValid)
+                {
+                    //Console.WriteLine("=== MODEL STATE INVALID ===");
+                    foreach (var error in ModelState)
+                    {
+                        Console.WriteLine($"{error.Key}: {string.Join(", ", error.Value.Errors.Select(e => e.ErrorMessage))}");
+                    }
 
-            bool Result = _memberservice.CreateMember(CreatedMember);
-            if(Result)
-            {
-                TempData["SuccessMessage"] = "Member Created Successfully";
+                    ModelState.AddModelError("DataInvalid", "Check Data And Missing Fields");
+                    return View(nameof(Create), CreatedMember);
+                }
+
+
+                //Validation ده هو هو نفس الكومنت اللي تحت بس عليه 
+
+                //if (!ModelState.IsValid)
+                //{
+                //    ModelState.AddModelError("DataInvalid", " Check Data And Missing Fields ");
+                //    return View(nameof(Create), CreatedMember);
+                //}
+
+                bool Result = _memberservice.CreateMember(CreatedMember);
+                if (Result)
+                {
+                    TempData["SuccessMessage"] = "Member Created Successfully";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Member Failed To Create , Check Phone And Email ";
+                }
+                return RedirectToAction(nameof(Index));
             }
-            else
+            catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "Member Failed To Create , Check Phone And Email ";
+                Console.WriteLine($" ERROR in Create Member: {ex}");
+                TempData["ErrorMessage"] = $"Unexpected error: {ex.Message}";
+                return View(CreatedMember);
             }
-            return RedirectToAction(nameof(Index));
         }
 
 

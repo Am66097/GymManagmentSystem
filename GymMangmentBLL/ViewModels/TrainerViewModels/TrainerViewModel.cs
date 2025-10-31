@@ -1,4 +1,5 @@
 ﻿using GymManagmentDAL.Entities;
+using GymManagmentDAL.Entities.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,8 @@ namespace GymMangmentBLL.ViewModels.TrainerViewModels
         public string Specialty { get; set; } = null!;
         public Address Address { get; set; } = null!;
         public DateTime DateOfBirth { get; set; }
+        public Gender Gender { get; set; } 
+
 
         List<Session> Sessions { get; set; } = null!;
     }

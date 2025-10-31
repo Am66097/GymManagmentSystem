@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using GymManagementSystemBLL.ViewModels.SessionViewModels;
 using GymManagmentDAL.Entities;
+using GymMangmentBLL.ViewModels.MemberShipsViewModels;
 using GymMangmentBLL.ViewModels.MemberViewModels;
 using GymMangmentBLL.ViewModels.PlanViewModels;
 using GymMangmentBLL.ViewModels.SessionViewModels;
@@ -15,11 +16,11 @@ namespace GymMangmentBLL
 {
     public class MappingProfiles : Profile
     {
-        public MappingProfiles() 
+        public MappingProfiles()
         {
 
             #region AutoMappering For Session 
-           
+
             CreateMap<Session, SessionViewModel>()
          .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.SessionCategory.CategoryName))
          .ForMember(dest => dest.TrainerName, opt => opt.MapFrom(src => src.SessionTrainer.Name))
@@ -38,7 +39,7 @@ namespace GymMangmentBLL
 
             #endregion
 
-                #region AutoMappering For Member 
+            #region AutoMappering For Member 
 
             //  من CreateMemberViewModel → Member
             CreateMap<CreateMemberViewModel, Member>()
@@ -71,12 +72,12 @@ namespace GymMangmentBLL
     .ForMember(dest => dest.PlanName, opt => opt.Ignore());
 
 
-            //  من Member → MemberViewModel
-            CreateMap<Member, MemberViewModel>()
-                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.PhoneNumber))
-                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender.ToString()))
-                .ForMember(dest => dest.Address, opt => opt.MapFrom(src =>
-                    $"{src.Address.BuildingNumber}, {src.Address.Street}, {src.Address.City}"));
+            ////  من Member → MemberViewModel
+            //CreateMap<Member, MemberViewModel>()
+            //    .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.PhoneNumber))
+            //    .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender.ToString()))
+            //    .ForMember(dest => dest.Address, opt => opt.MapFrom(src =>
+            //        $"{src.Address.BuildingNumber}, {src.Address.Street}, {src.Address.City}"));
 
             // من Member → MemberToUpdateViewModel
             CreateMap<Member, MemberToUpdateViewModel>()
@@ -92,7 +93,7 @@ namespace GymMangmentBLL
            BuildingNumber = src.BuildingNumber,
            Street = src.Street,
            City = src.City
-       })); 
+       }));
 
 
             //  من HealthRecord → HealthRecordViewModel
@@ -154,7 +155,7 @@ namespace GymMangmentBLL
     .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth)) //  تأكيد واضح
     .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender));
 
-           
+
 
             // من Trainer → TrainerToUpdateViewModel
             CreateMap<Trainer, TrainerToUpdateViewModel>()
@@ -180,10 +181,17 @@ namespace GymMangmentBLL
                 .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth));
             #endregion
 
+            #region AutoMappering For MemberShips
+
+            CreateMap<MemberShip, MemberShipViewModel>()
+            .ForMember(dest => dest.MemberName, opt => opt.MapFrom(src => src.Member.Name))
+            .ForMember(dest => dest.PlanName, opt => opt.MapFrom(src => src.Plan.Name))
+            .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndDate));
 
 
+            #endregion
         }
-        
+
 
     }
 }

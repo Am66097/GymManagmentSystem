@@ -13,13 +13,23 @@ namespace GymManagmentDAL.Repositories.Classes
     {
         private readonly Dictionary<Type, object> _repositories = new();
         private readonly GymDbContext _dbContext;
-        private readonly ISessionRepository sessionRepository1;
+        private readonly ISessionRepository _sessionRepository1;
+        private readonly IMemberShipRepository _memberShipRepository;
 
-        public UnitOfWork(GymDbContext dbContext , ISessionRepository sessionRepository)
+        public UnitOfWork(GymDbContext dbContext , ISessionRepository sessionRepository,IMemberShipRepository memberShipRepository)
         {
             _dbContext = dbContext;
-            sessionRepository1 = sessionRepository;
+            _sessionRepository1 = sessionRepository;
+            this._memberShipRepository = memberShipRepository;
+            _dbContext = dbContext;
+            MemberRepository = new MemberRepository(_dbContext);
+            PlanRepository = new PlanRepository(_dbContext);
         }
+        public IMemberRepository MemberRepository { get; private set; }
+        public IPlanRepository PlanRepository { get; private set; }
+
+
+        public IMemberShipRepository MemberShipRepository => _memberShipRepository ?? new MemberShipRepository(_dbContext);
 
         public ISessionRepository sessionRepository => new SessionRepository(_dbContext);
 
