@@ -55,6 +55,9 @@ namespace GymManagmentPL
             builder.Services.AddScoped<IPlanRepository, PlanRepository>();
             builder.Services.AddScoped<IMemberRepository, MemberRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<ISessionRepository, SessionRepository>();
+            builder.Services.AddScoped<IMemberSessionRepository, MemberSessionRepository>();
+            builder.Services.AddScoped<IMemberRepository, MemberRepository>(); 
 
 
 

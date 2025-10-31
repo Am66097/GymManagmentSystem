@@ -4,8 +4,10 @@ using GymManagmentDAL.Entities;
 using GymMangmentBLL.ViewModels.MemberShipsViewModels;
 using GymMangmentBLL.ViewModels.MemberViewModels;
 using GymMangmentBLL.ViewModels.PlanViewModels;
+using GymMangmentBLL.ViewModels.SessionScheduls;
 using GymMangmentBLL.ViewModels.SessionViewModels;
 using GymMangmentBLL.ViewModels.TrainerViewModels;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -190,6 +192,41 @@ namespace GymMangmentBLL
 
 
             #endregion
+
+            #region AutoMappering For SessionSchedule (Member Sessions)
+
+            CreateMap<Session, MemberSessionViewModel>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.SessionName, opt => opt.MapFrom(src => src.SessionCategory.CategoryName)) // ممكن تغيرها لو عندك اسم للجلسة
+                .ForMember(dest => dest.TrainerName, opt => opt.MapFrom(src => src.SessionTrainer.Name))
+                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.StartDate.Date))
+                .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.StartDate.TimeOfDay))
+                .ForMember(dest => dest.EndTime, opt => opt.MapFrom(src => src.EndDate.TimeOfDay))
+                .ForMember(dest => dest.Capacity, opt => opt.MapFrom(src => src.Capacity))
+                .ForMember(dest => dest.BookedSlots, opt => opt.MapFrom(src => src.SessionMembers.Count))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src =>
+                    DateTime.Now < src.StartDate ? "Upcoming" :
+                    DateTime.Now >= src.StartDate && DateTime.Now <= src.EndDate ? "Ongoing" : "Completed"))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));
+
+            #endregion
+
+            #region AutoMappering For SessionSchedule(Member Sessions)
+
+CreateMap<MemberSession, MemberBookingInfo>()
+    .ForMember(dest => dest.MemberName, opt => opt.MapFrom(src => src.Member.Name))
+    .ForMember(dest => dest.BookingDate, opt => opt.MapFrom(src => src.CreatedAt));
+
+CreateMap<Session, SessionMembersViewModel>()
+    .ForMember(dest => dest.SessionName, opt => opt.MapFrom(src => src.Description))
+    .ForMember(dest => dest.TrainerName, opt => opt.MapFrom(src => src.SessionTrainer.Name));
+
+            #endregion
+
+            CreateMap<CreateBookingViewModel, MemberSession>()
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => "Pending"))
+            .ForMember(dest => dest.IsAttended, opt => opt.MapFrom(src => false));
+
         }
 
 

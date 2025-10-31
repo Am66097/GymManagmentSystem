@@ -24,10 +24,14 @@ namespace GymManagmentDAL.Repositories.Classes
             _dbContext = dbContext;
             MemberRepository = new MemberRepository(_dbContext);
             PlanRepository = new PlanRepository(_dbContext);
+            SessionRepository = new SessionRepository(_dbContext);
+            MemberSessionRepository = new MemberSessionRepository(dbContext);
         }
         public IMemberRepository MemberRepository { get; private set; }
         public IPlanRepository PlanRepository { get; private set; }
 
+        public ISessionRepository SessionRepository { get; private set; }
+        public IMemberSessionRepository MemberSessionRepository { get; private set; }
 
         public IMemberShipRepository MemberShipRepository => _memberShipRepository ?? new MemberShipRepository(_dbContext);
 
