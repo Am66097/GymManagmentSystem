@@ -60,13 +60,14 @@
                                         }
                                         else
                                         {
-                                            <form asp-action="MarkAsAttended" method="post" class="d-inline">
+                                            <form asp-action="MarkAttendance" method="post">
                                                 <input type="hidden" name="memberSessionId" value="@member.MemberSessionId" />
                                                 <input type="hidden" name="sessionId" value="@Model.SessionId" />
-                                                <button type="submit" class="btn btn-outline-success btn-sm">
-                                                    <i class="bi bi-check-circle me-1"></i> Mark as Attended
+                                                <button type="submit" class="btn btn-success btn-sm">
+                                                    Mark Attendance
                                                 </button>
                                             </form>
+
                                         }
                                     </div>
                                 </td>

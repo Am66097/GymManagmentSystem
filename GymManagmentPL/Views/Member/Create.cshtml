@@ -70,7 +70,9 @@
                 </div>
                 <div class="col-12 col-md-6">
                     <label asp-for="DateOfBirth" class="form-label"></label>
-                    <input asp-for="DateOfBirth" type="date" class="form-control" />
+                    <input asp-for="DateOfBirth" type="date" class="form-control"
+                           value="@Model.DateOfBirth.ToString("yyyy-MM-dd")" />
+
                     <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                 </div>
 

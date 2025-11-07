@@ -157,7 +157,6 @@ namespace GymMangmentBLL.Services.Classes
 
         public MemberViewModel? GetMemberDetailsById(int MemberId)
         {
-
             var member = _unitOfWork.GetRepository<Member>().GetById(MemberId);
             if (member == null) return null;
 
@@ -173,31 +172,28 @@ namespace GymMangmentBLL.Services.Classes
             //    Photo = member.Photo,
             //}; 
             #endregion
+            var memberViewModel = _mapper.Map<MemberViewModel>(member);
 
-
-            var memberViewModel = _mapper.Map<MemberViewModel>(member); // After Using AutoMapper Pattern
-
-            //Active Membership
-
-            var activeMembership = _unitOfWork.GetRepository<MemberShip>().GetAll(m => m.Id == MemberId && m.Status == "Active")
+            // Active Membership
+            var activeMembership = _unitOfWork.GetRepository<MemberShip>()
+                .GetAll(m => m.MemberId == MemberId && m.Status == "Active")
                 .FirstOrDefault();
 
             if (activeMembership != null)
             {
-                memberViewModel.MembershipStartDate = activeMembership.CreatedAt.ToShortDateString();
-                memberViewModel.MembershipEndDate = activeMembership.EndDate.ToShortDateString();
+                memberViewModel.MembershipStartDate = activeMembership.CreatedAt;
+                memberViewModel.MembershipEndDate = activeMembership.EndDate;
 
                 var plan = _unitOfWork.GetRepository<Plan>().GetById(activeMembership.PlanId);
                 memberViewModel.PlanName = plan?.Name;
-
-
             }
-            return memberViewModel;
 
+            return memberViewModel;
         }
 
 
         public HealthRecordViewModel GetHealthRecordDetailsById(int MemberId)
+
         {
             var healthRecord = _unitOfWork.GetRepository<HealthRecord>().GetById(MemberId);
             if (healthRecord == null) return null!;

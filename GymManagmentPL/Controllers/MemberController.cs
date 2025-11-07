@@ -69,11 +69,15 @@ namespace GymManagmentPL.Controllers
         #endregion
 
         #region Create Member 
-        //[HttpGet] // Default
+        [HttpGet] // Default
         public ActionResult Create()
         {
-             
-            return View();
+            var model = new CreateMemberViewModel
+            {
+                HealthRecordViewModel = new HealthRecordViewModel(),
+                DateOfBirth = DateTime.Now
+            };
+            return View(model);
         }
 
         [HttpPost]

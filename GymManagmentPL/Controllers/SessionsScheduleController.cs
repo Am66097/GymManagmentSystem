@@ -82,12 +82,17 @@ namespace GymManagmentPL.Controllers
             }
 
             var memberSession = _mapper.Map<MemberSession>(model);
+
+            // هنا نعين التاريخ على الوقت الحالي
+            memberSession.CreatedAt = DateTime.Now;
+
             _unitOfWork.MemberSessionRepository.Add(memberSession);
             _unitOfWork.SaveChanges();
 
             TempData["SuccessMessage"] = "Booking created successfully!";
             return RedirectToAction("GetMembersForUpcomingSession", new { sessionId = model.SessionId });
         }
+
         #endregion
 
 
@@ -158,6 +163,7 @@ namespace GymManagmentPL.Controllers
         }
 
         #endregion
+
 
 
         #region MarkAttendance

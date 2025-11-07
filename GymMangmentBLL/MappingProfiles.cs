@@ -96,6 +96,11 @@ namespace GymMangmentBLL
            Street = src.Street,
            City = src.City
        }));
+            ///
+            CreateMap<Member, MemberViewModel>()
+    .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth))
+    .ForMember(dest => dest.MembershipStartDate, opt => opt.Ignore()) 
+    .ForMember(dest => dest.MembershipEndDate, opt => opt.Ignore());
 
 
             //  من HealthRecord → HealthRecordViewModel

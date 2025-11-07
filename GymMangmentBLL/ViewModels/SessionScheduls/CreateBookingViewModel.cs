@@ -16,10 +16,10 @@ namespace GymMangmentBLL.ViewModels.SessionScheduls
         public int MemberId { get; set; }
         public int AvailableSlots { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateTime? Date { get; set; }
 
         // قائمة الأعضاء للـ dropdown
-        public List<SelectListItem> Members { get; set; } = new();
+        public List<SelectListItem> Members { get; set; } = new List<SelectListItem>();
     }
 
 }

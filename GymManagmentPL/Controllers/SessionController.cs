@@ -52,9 +52,13 @@ namespace GymManagmentPL.Controllers
 
         public ActionResult Create()
         {
+            var model = new CreateSessionViewModel
+            {
+                StartDate = DateTime.Now.AddHours(1),
+                EndDate = DateTime.Now.AddHours(2)
+            };
             DropDowns();
-
-            return View();
+            return View(model);
         }
 
         [HttpPost]
@@ -132,7 +136,7 @@ namespace GymManagmentPL.Controllers
         #region Delete Session 
         // GET: Session/Delete/4
         [HttpGet]
-        public IActionResult Delete(int id)
+        public ActionResult Delete(int id)
         {
             var session = _sessionService.GetSessionById(id);
             if (session == null)
@@ -141,32 +145,21 @@ namespace GymManagmentPL.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // نبعث الـId للـView علشان الفورم يعرف يحذفه
             ViewBag.SessionId = id;
-
-            return View();
+            return View(session);
         }
 
         [HttpPost]
-        public IActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int id)
         {
-            var session = _sessionService.GetSessionById(id);
-            if (session == null)
-            {
-                TempData["ErrorMessage"] = "Session not found.";
-                return RedirectToAction(nameof(Index));
-            }
-
             var result = _sessionService.DeleteSession(id);
             if (result)
                 TempData["SuccessMessage"] = "Session deleted successfully.";
             else
-                TempData["ErrorMessage"] = "Failed to delete session (maybe has bookings).";
+                TempData["ErrorMessage"] = "Cannot delete session: either it's upcoming with bookings or ongoing.";
 
             return RedirectToAction(nameof(Index));
         }
-
-
 
         #endregion
 

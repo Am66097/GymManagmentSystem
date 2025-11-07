@@ -189,10 +189,17 @@ namespace GymMangmentBLL.Services.Classes
             if (session == null) return false;
 
             var bookedMembersCount = _unitOfWork.sessionRepository.GetCountOfBookedSlots(session.Id);
-            if (bookedMembersCount > 0) return false;
 
-            // نسمح بالحذف فقط إذا كانت قادمة (أو - حسب سياساتك - يمكنك السماح بحذف أي جلسة ليس لها حجوزات)
-            return session.StartDate > DateTime.Now;
+            // لو الجلسة انتهت بالفعل
+            if (session.EndDate <= DateTime.Now)
+                return true;
+
+            // لو الجلسة قادمة وما عليهاش حجوزات
+            if (session.StartDate > DateTime.Now && bookedMembersCount == 0)
+                return true;
+
+            // أي حالة أخرى: لا يسمح بالحذف
+            return false;
         }
         
         private bool IsSessionAvailableToUpdate(Session session)

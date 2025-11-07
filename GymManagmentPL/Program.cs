@@ -18,10 +18,7 @@ namespace GymManagmentPL
     {
         public static void Main(string[] args)
         {
-            //AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
-            //{
-            //    Console.WriteLine($"Unhandled Exception: {e.ExceptionObject}");
-            //};
+            
 
             var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +37,8 @@ namespace GymManagmentPL
             //builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
             //builder.Services.AddScoped<IPlanRepository, PlanRepository>(); 
 
+            #region Services 
+
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<ISessionRepository, SessionRepository>();
             builder.Services.AddAutoMapper(x => x.AddProfile(new MappingProfiles()));
@@ -57,7 +56,7 @@ namespace GymManagmentPL
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<ISessionRepository, SessionRepository>();
             builder.Services.AddScoped<IMemberSessionRepository, MemberSessionRepository>();
-            builder.Services.AddScoped<IMemberRepository, MemberRepository>(); 
+            builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 
 
 
@@ -72,6 +71,8 @@ namespace GymManagmentPL
                 options.LoginPath = "/Account/Login";
                 options.AccessDeniedPath = "/Account/AccessDenied";
             });
+
+            #endregion
 
             //builder.Services.AddIdentityCore<ApplicationUser>()
             //    .AddEntityFrameworkStores<GymDbContext>();
