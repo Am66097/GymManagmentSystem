@@ -8,8 +8,9 @@ namespace GymMangmentBLL.ViewModels.SessionScheduls
 {
     public class MemberBookingInfo
     {
-        public int MemberId { get; set; }
+        public int MemberSessionId { get; set; }
         public string MemberName { get; set; } = string.Empty;
+        public bool IsAttended { get; set; }
         public DateTime BookingDate { get; set; }
     }
 }

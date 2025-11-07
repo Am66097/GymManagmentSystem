@@ -11,17 +11,28 @@ namespace GymManagmentDAL.Data.Configurations
 {
     internal class MemberShipConfig : IEntityTypeConfiguration<MemberShip>
     {
+        //public void Configure(EntityTypeBuilder<MemberShip> builder)
+        //{
+        //    builder.Property(x => x.CreatedAt)
+        //        .HasColumnName("StartDate")
+        //        .HasDefaultValueSql("GETDATE()");
+
+        //    builder.HasKey(x => new { x.MemberId, x.PlanId });
+        //    builder.Ignore(x => x.MemberId);
+
+
+
+        //}
         public void Configure(EntityTypeBuilder<MemberShip> builder)
         {
-            builder.Property(x => x.CreatedAt)
-                .HasColumnName("StartDate")
-                .HasDefaultValueSql("GETDATE()");
+            builder.Ignore(x => x.Id); // تجاهل الـ Id اللي جاي من BaseEntity
 
             builder.HasKey(x => new { x.MemberId, x.PlanId });
-            //builder.Ignore(x => x.MemberId);
 
-
-
+            builder.Property(x => x.CreatedAt)
+                   .HasColumnName("StartDate")
+                   .HasDefaultValueSql("GETDATE()");
         }
+
     }
 }

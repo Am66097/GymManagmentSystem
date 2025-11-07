@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using AutoMapper.Execution;
 using GymManagmentDAL.Entities;
 using GymManagmentDAL.Repositories.Interfaces;
 using GymMangmentBLL.Services.Interfaces;
 using GymMangmentBLL.ViewModels.MemberShipsViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Numerics;
 
 namespace GymManagmentPL.Controllers
 {
@@ -28,12 +30,15 @@ namespace GymManagmentPL.Controllers
         #region Get All MemberShips Action
         public ActionResult Index()
         {
-            var memberships = _memberShipService.GetAll();
+            var memberships = _memberShipService.GetAll()
+                                .Where(m => m.EndDate > DateTime.Now)
+                                .ToList();
 
             var membershipsVM = _mapper.Map<IEnumerable<MemberShipViewModel>>(memberships);
 
             return View(membershipsVM);
         }
+
 
 
         #endregion
@@ -66,6 +71,16 @@ namespace GymManagmentPL.Controllers
                 return View(model);
             }
 
+            var existingMembership = _unitOfWork.MemberShipRepository
+                .GetAll()
+                .FirstOrDefault(m => m.MemberId == model.MemberId && m.EndDate > DateTime.Now);
+
+            if (existingMembership != null)
+            {
+                TempData["ErrorMessage"] = "This Member Already Sign In Anthor Plan ";
+                return RedirectToAction("Index");
+            }
+
             var selectedPlan = _unitOfWork.PlanRepository.GetById(model.PlanId);
             if (selectedPlan == null)
             {
@@ -95,6 +110,27 @@ namespace GymManagmentPL.Controllers
         #endregion
 
         #region Cancel Action
+        [HttpPost]
+        public ActionResult Cancel(int memberId, int planId)
+        {
+            var membership = _unitOfWork.MemberShipRepository.GetById(memberId, planId);
+
+            if (membership == null)
+            {
+                TempData["ErrorMessage"] = "Membership not found.";
+                return RedirectToAction("Index");
+            }
+
+            membership.EndDate = DateTime.Now;
+
+            _unitOfWork.MemberShipRepository.Update(membership);
+            _unitOfWork.SaveChanges();
+
+            TempData["SuccessMessage"] = "Membership cancelled successfully.";
+            return RedirectToAction("Index");
+        }
+
+
 
         #endregion
     }

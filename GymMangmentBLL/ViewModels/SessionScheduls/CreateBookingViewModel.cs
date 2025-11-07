@@ -7,16 +7,20 @@ using System.Threading.Tasks;
 
 namespace GymMangmentBLL.ViewModels.SessionScheduls
 {
-   
-        public class CreateBookingViewModel
-        {
-            public int SessionId { get; set; }
-            public int MemberId { get; set; }
+
+    public class CreateBookingViewModel
+    {
+        public int SessionId { get; set; }
+        public string SessionName { get; set; } = string.Empty;
+
+        public int MemberId { get; set; }
+        public int AvailableSlots { get; set; }
 
         public DateTime Date { get; set; }
-            // دي هتكون قائمة الأعضاء للـ dropdown
-            public List<SelectListItem> Members { get; set; } = new();
-        }
-    
+
+        // قائمة الأعضاء للـ dropdown
+        public List<SelectListItem> Members { get; set; } = new();
+    }
+
 }
 

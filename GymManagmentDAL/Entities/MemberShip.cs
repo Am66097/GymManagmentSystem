@@ -29,7 +29,7 @@ namespace GymManagmentDAL.Entities
         #region Relationships
 
         #region Membership - Member
-        public Member Member { get; set; }
+        public Member Member { get; set; } 
         public int MemberId { get; set; }
         #endregion
 

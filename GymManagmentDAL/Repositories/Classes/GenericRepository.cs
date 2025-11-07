@@ -51,7 +51,9 @@ using System.Linq;
 
 namespace GymManagmentDAL.Repositories.Classes
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity, new()
+    public class GenericRepository<T> : IGenericRepository<T>
+     where T : BaseEntity, new()
+
     {
         private readonly GymDbContext _dbcontext;
         private readonly DbSet<T> _dbSet;
@@ -67,25 +69,36 @@ namespace GymManagmentDAL.Repositories.Classes
         public void Delete(T entity)
         {
             var entry = _dbcontext.Entry(entity);
-
             if (entry.State == EntityState.Detached)
-            {
                 _dbSet.Attach(entity);
-            }
 
             _dbSet.Remove(entity);
         }
 
         public IEnumerable<T> GetAll(Func<T, bool>? condition = null)
         {
-            if (condition is null)
-                return _dbSet.AsNoTracking().ToList();
-            else
-                return _dbSet.AsNoTracking().Where(condition).ToList();
+            return condition == null
+                ? _dbSet.AsNoTracking().ToList()
+                : _dbSet.AsNoTracking().Where(condition).ToList();
         }
 
-        public T? GetById(int id) => _dbSet.Find(id);
+        public T? GetById(params object[] keyValues)
+        {
+            return _dbSet.Find(keyValues);
+        }
 
-        public void Update(T entity) => _dbSet.Update(entity);
+        public void Update(T entity)
+        {
+            var entry = _dbcontext.Entry(entity);
+
+            if (entry.State == EntityState.Detached)
+                _dbSet.Attach(entity);
+
+            entry.State = EntityState.Modified;
+        }
+
+       
+
     }
+
 }

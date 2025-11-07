@@ -27,22 +27,73 @@ namespace GymManagmentPL.Controllers
             this._memberRepository = memberRepository;
         }
         #region Index
-
         public ActionResult Index()
         {
-            var sessions = _sessionRepository.GetAllSessionsWithDetails();
+            var sessions = _unitOfWork.SessionRepository.GetAllSessionsWithDetails();
 
             var viewModel = _mapper.Map<List<MemberSessionViewModel>>(sessions);
 
             return View(viewModel);
         }
-
         #endregion
 
-        #region GetMembersForUpcomingSession Action 
 
+        #region CreateBooking (GET)
         [HttpGet]
-        public IActionResult GetMembersForUpcomingSession(int sessionId)
+        public ActionResult CreateBooking(int sessionId)
+        {
+            var session = _unitOfWork.SessionRepository.GetById(sessionId);
+            if (session == null)
+                return NotFound();
+
+            var members = _unitOfWork.MemberRepository
+                .GetAll()
+                .Select(m => new SelectListItem
+                {
+                    Value = m.Id.ToString(),
+                    Text = m.Name
+                })
+                .ToList();
+
+            var model = new CreateBookingViewModel
+            {
+                SessionId = session.Id,
+                Date = session.CreatedAt,
+                Members = members
+            };
+
+            return View(model);
+        }
+        [HttpPost]
+        public ActionResult CreateBooking(CreateBookingViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.Members = _unitOfWork.MemberRepository
+                    .GetAll()
+                    .Select(m => new SelectListItem
+                    {
+                        Value = m.Id.ToString(),
+                        Text = m.Name
+                    })
+                    .ToList();
+
+                return View(model);
+            }
+
+            var memberSession = _mapper.Map<MemberSession>(model);
+            _unitOfWork.MemberSessionRepository.Add(memberSession);
+            _unitOfWork.SaveChanges();
+
+            TempData["SuccessMessage"] = "Booking created successfully!";
+            return RedirectToAction("GetMembersForUpcomingSession", new { sessionId = model.SessionId });
+        }
+        #endregion
+
+
+        #region GetMembersForUpcomingSession
+        [HttpGet]
+        public ActionResult GetMembersForUpcomingSession(int sessionId)
         {
             var session = _unitOfWork.SessionRepository
                 .GetAllSessionsWithDetails()
@@ -60,9 +111,12 @@ namespace GymManagmentPL.Controllers
             return View(viewModel);
         }
 
+
+        #endregion
+
+        #region Cancel
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult CancelBooking(int memberSessionId, int sessionId)
+        public ActionResult CancelBooking(int memberSessionId, int sessionId)
         {
             var booking = _unitOfWork.MemberSessionRepository
                 .GetAll()
@@ -80,80 +134,60 @@ namespace GymManagmentPL.Controllers
             TempData["SuccessMessage"] = "Booking cancelled successfully!";
             return RedirectToAction(nameof(GetMembersForUpcomingSession), new { sessionId });
         }
+        #endregion
+
+        #region GetMembersForOngoingSession
+
+        [HttpGet]
+        public ActionResult GetMembersForOngoingSessions(int sessionId)
+        {
+            var session = _unitOfWork.SessionRepository
+                .GetAllSessionsWithDetails()
+                .FirstOrDefault(s => s.Id == sessionId);
+
+            if (session == null)
+                return NotFound();
+
+            var memberSessions = _unitOfWork.MemberSessionRepository.GetBySessionId(sessionId);
+
+            var viewModel = _mapper.Map<SessionMembersViewModel>(session);
+            viewModel.Members = _mapper.Map<List<MemberBookingInfo>>(memberSessions);
+            viewModel.SessionId = sessionId;
+
+            return View(viewModel);
+        }
 
         #endregion
 
 
-        #region MemberSession(SessionSchedule) Create Action
-
-        //[HttpGet]
-        //public IActionResult CreateBooking(int sessionId)
-        //{
-        //    var model = new CreateBookingViewModel
-        //    {
-        //        SessionId = sessionId
-        //    };
-
-        //    // جلب كل الأعضاء لعرضهم في Select
-        //    ViewBag.Members = new SelectList(_memberRepository.GetAll(), "Id", "FullName");
-
-        //    return View(model);
-        //}
-        [HttpGet]
-        public IActionResult CreateBooking(int sessionId)
-        {
-            var members = _unitOfWork.MemberRepository
-                            .GetAll()
-                            .Where(m => !string.IsNullOrEmpty(m.Name))
-                            .Select(m => new SelectListItem
-                            {
-                                Value = m.Id.ToString(),
-                                Text = m.Name
-                            })
-                            .ToList();
-
-            var model = new CreateBookingViewModel
-            {
-                SessionId = sessionId,
-                Members = members
-            };
-
-            return View(model);
-        }
+        #region MarkAttendance
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult CreateBooking(CreateBookingViewModel model)
+        public ActionResult MarkAttendance(int memberSessionId, int sessionId)
         {
-            if (!ModelState.IsValid)
-            {
-                // لو في خطأ نرجع نفس القائمة للـ dropdown
-                model.Members = _unitOfWork.MemberRepository
-                                    .GetAll()
-                                    .Where(m => !string.IsNullOrEmpty(m.Name))
-                                    .Select(m => new SelectListItem
-                                    {
-                                        Value = m.Id.ToString(),
-                                        Text = m.Name
-                                    })
-                                    .ToList();
+            var booking = _unitOfWork.MemberSessionRepository
+                .GetAll()
+                .FirstOrDefault(ms => ms.Id == memberSessionId);
 
-                return View(model);
+            if (booking == null)
+            {
+                TempData["ErrorMessage"] = "Booking not found!";
+                return RedirectToAction(nameof(GetMembersForOngoingSessions), new { sessionId });
             }
 
-            var memberSession = _mapper.Map<MemberSession>(model);
-            _unitOfWork.MemberSessionRepository.Add(memberSession);
+            booking.IsAttended = true;
+            booking.AttendanceDate = DateTime.Now;
+
+            _unitOfWork.MemberSessionRepository.Update(booking);
             _unitOfWork.SaveChanges();
 
-            TempData["SuccessMessage"] = "Booking created successfully!";
-            return RedirectToAction("GetMembersForUpcomingSession", new { sessionId = model.SessionId });
+            TempData["SuccessMessage"] = "Member marked as attended!";
+            return RedirectToAction(nameof(GetMembersForOngoingSessions), new { sessionId });
         }
-        #endregion
-
-
-        #region GetMembersForOngoingSession Action 
 
         #endregion
+
+
     }
 }
 

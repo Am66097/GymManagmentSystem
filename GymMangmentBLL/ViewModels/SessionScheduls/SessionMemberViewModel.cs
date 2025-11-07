@@ -9,10 +9,11 @@ namespace GymMangmentBLL.ViewModels.SessionScheduls
     public class SessionMembersViewModel
     {
         public int SessionId { get; set; }
-        public string SessionName { get; set; } = null!;
-        public String TrainerName { get; set; } = null!;
-        public List<MemberBookingInfo> Members { get; set; } = new();
-    }
+        public string SessionName { get; set; } = string.Empty;
+        public DateTime Date { get; set; }
 
-   
+        public List<MemberBookingInfo> Members { get; set; } = new();
+
+        public string TrainerName { get; set; } = string.Empty;
+    }
 }
