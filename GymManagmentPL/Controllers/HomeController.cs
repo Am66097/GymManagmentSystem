@@ -1,8 +1,10 @@
 ﻿using GymMangmentBLL.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymManagmentPL.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly IAnalyticsService _analyticsService;
@@ -17,6 +19,7 @@ namespace GymManagmentPL.Controllers
             var Data = _analyticsService.GetAnalyticsData();
             return View(Data);
         }
+       
 
         //public ViewResult About() //ViewResult for only views
         //{

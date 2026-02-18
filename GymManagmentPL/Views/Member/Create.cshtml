@@ -1,15 +1,18 @@
 ﻿@using GymManagmentDAL.Entities.Enums
 @model CreateMemberViewModel
+@{
+    ViewData["Tittle"] = "CreateMember";
+}
 
 
 <header class="mb-4">
     <h3 class="text-primary-color">Add Member</h3>
 </header>
 
-@Html.ValidationMessage("DataInvalid", new { @class = "text-danger" });
+@Html.ValidationMessage("DataInvalid", new { @class = "text-danger" })
 
 @*<form asp-action="CreateMember" method="post">*@
-    <form asp-controller="Member" asp-action="CreateMember" method="post">
+    <form asp-controller="Member" asp-action="Create" method="post" enctype="multipart/form-data">
 
 
     <!-- Step navigation -->
@@ -38,6 +41,16 @@
                 <hr class="mt-2">
             </div>
             <div class="row g-3">
+                <!-- Photo Preview -->
+                <div class="mt-2">
+                    <img id="photoPreview" src="#" alt="Photo Preview" style="max-width: 200px; display: none;"
+                         class="img-thumbnail" />
+                </div>
+                <label asp-for="PhotoFile" class="control-label">Profile Photo <span class="text-danger">*</span></label>
+                <input asp-for="PhotoFile" type="file" class="form-control" accept="image/*" id="photoInput" required />
+                <span asp-validation-for="PhotoFile" class="text-danger"></span>
+                <small class="form-text text-muted">Max size: 5 MB. Allowed types: JPG, PNG, JPEG (Required)</small>
+
                 <div class="col-12 col-md-6">
                     <label asp-for="Name" class="form-label"></label>
                     <input asp-for="Name" type="text" class="form-control" />
@@ -57,7 +70,9 @@
                 </div>
                 <div class="col-12 col-md-6">
                     <label asp-for="DateOfBirth" class="form-label"></label>
-                    <input asp-for="DateOfBirth" type="date" class="form-control" />
+                    <input asp-for="DateOfBirth" type="date" class="form-control"
+                           value="@Model.DateOfBirth.ToString("yyyy-MM-dd")" />
+
                     <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                 </div>
 
@@ -69,6 +84,7 @@
                     <span asp-validation-for="Gender" class="text-danger"></span>
 
                 </div>
+
 
             </div>
             <div class="section-header mb-3 mt-4">
@@ -95,6 +111,7 @@
                 </div>
             </div>
         </div>
+    </div>
 
         <!-- Health Data -->
         <div class="tab-pane fade" id="health-info" role="tabpanel" aria-labelledby="health-tab">
@@ -133,7 +150,7 @@
                 </div>
             </div>
         </div>
-    </div>
+
 
     <footer class="d-flex justify-content-end gap-3 mt-4">
         <a asp-controller="Member" asp-action="Index" class="btn btn-outline-secondary px-4">
@@ -150,6 +167,20 @@
 @section Scripts
 {
     <partial name="_ValidationScriptsPartial" />
-
+    <script>
+        // Preview photo before upload
+        document.getElementById('photoInput').addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var preview = document.getElementById('photoPreview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 
 }

@@ -2,6 +2,7 @@
 using GymManagmentDAL.Entities;
 using GymManagmentDAL.Repositories.Classes;
 using GymManagmentDAL.Repositories.Interfaces;
+using GymMangmentBLL.Services.AttachmentService;
 using GymMangmentBLL.Services.Interfaces;
 using GymMangmentBLL.ViewModels.MemberViewModels;
 using GymMangmentBLL.ViewModels.SessionViewModels;
@@ -43,15 +44,17 @@ namespace GymMangmentBLL.Services.Classes
 
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IAttachmentService _attachmentService;
 
-        public MemberService(IUnitOfWork unitOfWork, IMapper mapper) 
+        public MemberService(IUnitOfWork unitOfWork, IMapper mapper, IAttachmentService attachmentService)
         {
             _unitOfWork = unitOfWork;
             this._mapper = mapper;
+            this._attachmentService = attachmentService;
         }
 
 
-	    #endregion
+        #endregion
 
         public bool CreateMember(CreateMemberViewModel Createdmember)
         {
@@ -66,6 +69,9 @@ namespace GymMangmentBLL.Services.Classes
                 //if (emailExists || phoneExists) return false; // ==
 
                 if (IsEmailExists(Createdmember.Email) || IsPhoneExists(Createdmember.Phone)) return false;
+
+                var photoName = _attachmentService.Upload("members", Createdmember.PhotoFile);
+                if (string.IsNullOrEmpty(photoName)) return false;
 
 
                 #region Before Using AutoMapper Pattern
@@ -101,8 +107,20 @@ namespace GymMangmentBLL.Services.Classes
                 #region After Using AutoMapper Pattern
 
                 var member = _mapper.Map<Member>(Createdmember);
+                member.Photo = photoName;
                 _unitOfWork.GetRepository<Member>().Add(member);
-                return _unitOfWork.SaveChanges() > 0; 
+                var isCreated = _unitOfWork.SaveChanges() > 0;
+                if (!isCreated)
+                {
+                    _attachmentService.Delete(photoName, "members");
+                    return false;
+                }
+                else
+                {
+                    return isCreated;
+                }
+
+
                 #endregion
             }
             catch (Exception)
@@ -139,7 +157,6 @@ namespace GymMangmentBLL.Services.Classes
 
         public MemberViewModel? GetMemberDetailsById(int MemberId)
         {
-
             var member = _unitOfWork.GetRepository<Member>().GetById(MemberId);
             if (member == null) return null;
 
@@ -155,31 +172,28 @@ namespace GymMangmentBLL.Services.Classes
             //    Photo = member.Photo,
             //}; 
             #endregion
+            var memberViewModel = _mapper.Map<MemberViewModel>(member);
 
-
-            var memberViewModel = _mapper.Map<MemberViewModel>(member); // After Using AutoMapper Pattern
-
-            //Active Membership
-
-            var activeMembership = _unitOfWork.GetRepository<MemberShip>().GetAll(m => m.Id == MemberId && m.Status == "Active")
+            // Active Membership
+            var activeMembership = _unitOfWork.GetRepository<MemberShip>()
+                .GetAll(m => m.MemberId == MemberId && m.Status == "Active")
                 .FirstOrDefault();
 
             if (activeMembership != null)
-            {   
-                memberViewModel.MembershipStartDate = activeMembership.CreatedAt.ToShortDateString();
-                memberViewModel.MembershipEndDate = activeMembership.EndDate.ToShortDateString();
+            {
+                memberViewModel.MembershipStartDate = activeMembership.CreatedAt;
+                memberViewModel.MembershipEndDate = activeMembership.EndDate;
 
                 var plan = _unitOfWork.GetRepository<Plan>().GetById(activeMembership.PlanId);
                 memberViewModel.PlanName = plan?.Name;
-
-
             }
+
             return memberViewModel;
+        }
 
-        }  
 
-        
         public HealthRecordViewModel GetHealthRecordDetailsById(int MemberId)
+
         {
             var healthRecord = _unitOfWork.GetRepository<HealthRecord>().GetById(MemberId);
             if (healthRecord == null) return null!;
@@ -196,7 +210,7 @@ namespace GymMangmentBLL.Services.Classes
 
             #region After Using AutoMapper Pattern
             var healthRecordViewModel = _mapper.Map<HealthRecordViewModel>(healthRecord);
-            return healthRecordViewModel; 
+            return healthRecordViewModel;
             #endregion
         }
 
@@ -221,7 +235,7 @@ namespace GymMangmentBLL.Services.Classes
             #region After Using AutoMapper Pattern
             var member = _unitOfWork.GetRepository<Member>().GetById(MemberId);
             if (member == null) return null!;
-            return _mapper.Map<MemberToUpdateViewModel>(member); 
+            return _mapper.Map<MemberToUpdateViewModel>(member);
             #endregion
 
 
@@ -240,12 +254,12 @@ namespace GymMangmentBLL.Services.Classes
 
                 //if (IsEmailExists(UpdatedMember.Email) || IsPhoneExists(UpdatedMember.Phone)) return false;
                 var emailExist = _unitOfWork.GetRepository<Member>()
-                    .GetAll(x=>x.Email == UpdatedMember.Email && x.Id != MemberId);
+                    .GetAll(x => x.Email == UpdatedMember.Email && x.Id != MemberId);
 
                 var phoneExist = _unitOfWork.GetRepository<Member>()
                 .GetAll(x => x.PhoneNumber == UpdatedMember.Phone && x.Id != MemberId);
 
-                if(emailExist.Any() || phoneExist.Any()) return false; 
+                if (emailExist.Any() || phoneExist.Any()) return false;
                 var Repo = _unitOfWork.GetRepository<Member>();
 
                 #region Before Using AutoMapper Pattern
@@ -268,9 +282,9 @@ namespace GymMangmentBLL.Services.Classes
                 if (oldMember == null) return false;
                 _mapper.Map(UpdatedMember, oldMember);
                 oldMember.UpdatedAt = DateTime.Now;
-             
 
-                return _unitOfWork.SaveChanges() > 0; 
+
+                return _unitOfWork.SaveChanges() > 0;
                 #endregion
 
             }
@@ -310,8 +324,12 @@ namespace GymMangmentBLL.Services.Classes
                     }
 
                 }
-                 Repo.Delete(member) ;
-                return _unitOfWork.SaveChanges() > 0;
+                Repo.Delete(member);
+
+                var isDeleted = _unitOfWork.SaveChanges() > 0;
+                if (isDeleted)
+                    _attachmentService.Delete(member.Photo, "members");
+                return isDeleted;
             }
             catch (Exception)
             {
@@ -321,7 +339,7 @@ namespace GymMangmentBLL.Services.Classes
         }
 
         #region Helper Methods
-        
+
         private bool IsEmailExists(string email)
         {
             return _unitOfWork.GetRepository<Member>().GetAll(x => x.Email == email).Any();

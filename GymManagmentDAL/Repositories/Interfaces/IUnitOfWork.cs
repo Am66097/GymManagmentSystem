@@ -9,9 +9,13 @@ namespace GymManagmentDAL.Repositories.Interfaces
 {
     public interface IUnitOfWork
     {
-        public ISessionRepository sessionRepository { get;  }
+        public ISessionRepository sessionRepository { get; }
+        public IMemberShipRepository MemberShipRepository { get; }
+        IPlanRepository PlanRepository { get; }
+        IMemberRepository MemberRepository { get; }
         IGenericRepository<T> GetRepository<T>() where T : BaseEntity, new();
-
+        ISessionRepository SessionRepository { get; }
+        IMemberSessionRepository MemberSessionRepository { get; }
         int SaveChanges();
 
     }

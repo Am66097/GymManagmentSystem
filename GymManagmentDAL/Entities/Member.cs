@@ -12,7 +12,7 @@ namespace GymManagmentDAL.Entities
 
         #region Properties
 
-        public string? Photo { get; set; } 
+        public string Photo { get; set; } = null!;
 
         #endregion
 
@@ -31,7 +31,7 @@ namespace GymManagmentDAL.Entities
 
         #region Member - MemberSessions
 
-        public ICollection<MemberSession> MemberSessions { get; set; }
+        public ICollection<MemberSession> MemberSessions { get; set; } = null!;
 
         #endregion
 

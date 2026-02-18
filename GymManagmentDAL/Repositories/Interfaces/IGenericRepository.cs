@@ -9,12 +9,11 @@ namespace GymManagmentDAL.Repositories.Interfaces
 {
     public interface IGenericRepository<T> where T : BaseEntity, new()
     {
-
-        IEnumerable<T> GetAll(Func<T,bool>? Condition = null);
-        T? GetById(int id);
+        IEnumerable<T> GetAll(Func<T, bool>? condition = null);
+        T? GetById(params object[] keyValues);
         void Add(T entity);
         void Update(T entity);
         void Delete(T entity);
-
     }
+
 }
